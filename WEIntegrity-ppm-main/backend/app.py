@@ -1,0 +1,48 @@
+from flask import Flask
+from flask_cors import CORS
+from config.db import db
+from routes.projects import projects_bp
+from routes.stories import stories_bp
+from routes.tasks import tasks_bp
+
+app = Flask(__name__)
+CORS(app)
+app.register_blueprint(projects_bp)
+app.register_blueprint(stories_bp)
+app.register_blueprint(tasks_bp)
+
+
+@app.route("/")
+def home():
+    return {
+        "message": "WEIntegrity Backend Running",
+        "database": db.name
+    }
+
+@app.route("/add-project")
+def add_project():
+
+    project = {
+    "key": "WEI",
+    "name": "WEIntegrity PPM",
+    "client": "Internal",
+    "status": "On Track",
+    "priority": "High",
+    "progress": 75,
+    "lead": "u-2",
+    "members": ["u-4", "u-5"],
+    "tags": ["React", "MongoDB"],
+    "budget": 100000,
+    "spent": 50000,
+    "endDate": "2026-12-31"
+}
+
+    result = db.projects.insert_one(project)
+
+    return {
+        "message": "Project Added",
+        "id": str(result.inserted_id)
+    }
+
+if __name__ == "__main__":
+    app.run(debug=True)

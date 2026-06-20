@@ -1,0 +1,37 @@
+                                   ------------------------------------------------------------------------------------------        KEYS      -------------------------------------------------------------------------------------------------
+
+MONGO DB ATLAS :-
+
+Username : mohammadmansoor2804_db_user
+
+Password : I5VJItVhhd1gAgpU
+
+Mongo Uri Connection String  : mongodb+srv://<db_username>:I5VJItVhhd1gAgpU@cluster0.x9ljd61.mongodb.net/?appName=Cluster0
+
+
+
+
+
+
+
+
+
+
+
+
+				 ---------------------------------------------------------------------------------------        COMMANDS      -----------------------------------------------------------------------------------------
+
+ FRONT-END TERMINAL:
+
+npm install
+
+npm run dev
+
+
+BACK-END TERMINAL:
+
+cd backend
+
+venv\Scripts\activate
+
+python app.py
