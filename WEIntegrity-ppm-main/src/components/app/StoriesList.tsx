@@ -195,7 +195,7 @@ export function StoriesList({ stories, totalCount, emptyTitle, emptyDescription,
                       <td className="py-3 pr-5 text-right text-xs font-semibold tabular-nums">{s.storyPoints}</td>
                       <td className="py-3 pr-3">
                         <button
-                          onClick={() => {fetch(`http://127.0.0.1:5000/api/stories/${s.id}`, {method: "DELETE",}).then(() => window.location.reload()).catch((err) => console.error(err));}}
+                          onClick={() => {fetch(`https://weintegrity-ppm-main.onrender.com/api/stories/${s.id}`, {method: "DELETE",}).then(() => window.location.reload()).catch((err) => console.error(err));}}
                           title="Delete"
                           className="opacity-0 group-hover:opacity-100 transition h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
                         >
@@ -285,7 +285,7 @@ function InlineStatusSelect({ story }: { story: Story }) {
     default: "bg-muted text-foreground/80 border-border",
   };
   return (
-    <select aria-label="Story status" value={story.status} onChange={(e) => {fetch(`http://127.0.0.1:5000/api/stories/${story.id}`, {
+    <select aria-label="Story status" value={story.status} onChange={(e) => {fetch(`https://weintegrity-ppm-main.onrender.com/api/stories/${story.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

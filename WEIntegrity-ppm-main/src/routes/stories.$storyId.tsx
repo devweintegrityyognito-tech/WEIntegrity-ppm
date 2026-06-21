@@ -34,7 +34,7 @@ function StoryDetail() {
       useEffect(() => {
 
         // Story fetch
-        fetch("http://127.0.0.1:5000/api/stories")
+        fetch("https://weintegrity-ppm-main.onrender.com/api/stories")
           .then((res) => res.json())
           .then((data) => {
 
@@ -48,7 +48,7 @@ function StoryDetail() {
           });
 
         // Tasks fetch
-        fetch("http://127.0.0.1:5000/api/tasks")
+        fetch("https://weintegrity-ppm-main.onrender.com/api/tasks")
           .then((res) => res.json())
           .then((data) => {
 
@@ -253,7 +253,7 @@ function TasksPanel({ storyId, tasks }: { storyId: string; tasks: ScrumTask[] })
                         </button>
                         <button onClick={() => {
 
-                          fetch(`http://127.0.0.1:5000/api/tasks/${t._id}`, {
+                          fetch(`https://weintegrity-ppm-main.onrender.com/api/tasks/${t._id}`, {
                             method: "DELETE"
                           })
                           .then(() => {
@@ -283,7 +283,7 @@ function TasksPanel({ storyId, tasks }: { storyId: string; tasks: ScrumTask[] })
           initial={editing}
         onSubmit={(data) => {
 
-          fetch("http://127.0.0.1:5000/api/tasks", {
+          fetch("https://weintegrity-ppm-main.onrender.com/api/tasks", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"

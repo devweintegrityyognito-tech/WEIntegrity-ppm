@@ -17,7 +17,7 @@ function ProjectsPage() {
 
   const [apiProjects, setApiProjects] = useState<any[]>([]);
   useEffect(() => {
-  fetch("http://127.0.0.1:5000/api/projects")
+  fetch("https://weintegrity-ppm-main.onrender.com/api/projects")
     .then((res) => res.json())
     .then((data) => {
       setApiProjects(data);

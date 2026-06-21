@@ -13,7 +13,7 @@ function MyStoriesPage() {
   const [apiStories, setApiStories] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/stories")
+    fetch("https://weintegrity-ppm-main.onrender.com/api/stories")
       .then((res) => res.json())
       .then((data) => setApiStories(data))
       .catch((err) => console.error(err));
