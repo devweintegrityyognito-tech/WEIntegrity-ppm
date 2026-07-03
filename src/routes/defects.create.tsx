@@ -67,7 +67,7 @@ function CreateDefectPage() {
     setSubmitting(true);
     console.log("Story ID received:", storyId);
 
-    fetch("http://127.0.0.1:5000/api/defects", {
+    fetch("https://weintegrity-ppm-main.onrender.com/api/defects", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

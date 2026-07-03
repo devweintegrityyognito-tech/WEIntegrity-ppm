@@ -32,7 +32,7 @@ const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 
 async function refreshTasks() {
-  const res = await fetch("http://127.0.0.1:5000/api/tasks");
+  const res = await fetch("https://weintegrity-ppm-main.onrender.com/api/tasks");
   state = await res.json();
   emit();
 }
@@ -55,7 +55,7 @@ export const scrumTasksStore = {
       actualHours?: number;
     },
   ) {
-    await fetch("http://127.0.0.1:5000/api/tasks", {
+    await fetch("https://weintegrity-ppm-main.onrender.com/api/tasks", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export const scrumTasksStore = {
     emit();
   },
   async remove(id: string) {
-    await fetch(`http://127.0.0.1:5000/api/tasks/${id}`, {
+    await fetch(`https://weintegrity-ppm-main.onrender.com/api/tasks/${id}`, {
       method: "DELETE",
     });
     await refreshTasks();

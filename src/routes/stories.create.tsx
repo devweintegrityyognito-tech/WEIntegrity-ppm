@@ -64,7 +64,7 @@ function CreateStoryPage() {
     if (!validate()) return;
     setSubmitting(true);
 
-    fetch("http://127.0.0.1:5000/api/stories", {
+    fetch("https://weintegrity-ppm-main.onrender.com/api/stories", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

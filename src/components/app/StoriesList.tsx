@@ -354,7 +354,7 @@ export function StoriesList({
                       <td className="py-3 pr-3">
                         <button
                           onClick={() => {
-                            fetch(`http://127.0.0.1:5000/api/stories/${s.id}`, {
+                            fetch(`https://weintegrity-ppm-main.onrender.com/api/stories/${s.id}`, {
                               method: "DELETE",
                             })
                               .then(() => window.location.reload())

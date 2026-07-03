@@ -37,7 +37,7 @@ function emit() {
 }
 
 async function refreshStories() {
-  const res = await fetch("http://127.0.0.1:5000/api/stories");
+  const res = await fetch("https://weintegrity-ppm-main.onrender.com/api/stories");
   state = await res.json();
   emit();
 }
@@ -54,7 +54,7 @@ export const storiesStore = {
     return () => listeners.delete(l);
   },
   add(input: Omit<Story, "id" | "key" | "createdAt">) {
-    return fetch("http://127.0.0.1:5000/api/stories", {
+    return fetch("https://weintegrity-ppm-main.onrender.com/api/stories", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +63,7 @@ export const storiesStore = {
     });
   },
   updateStatus(id: string, status: StoryStatus) {
-    return fetch(`http://127.0.0.1:5000/api/stories/${id}`, {
+    return fetch(`https://weintegrity-ppm-main.onrender.com/api/stories/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +72,7 @@ export const storiesStore = {
     });
   },
   async remove(id: string) {
-    await fetch(`http://127.0.0.1:5000/api/stories/${id}`, {
+    await fetch(`https://weintegrity-ppm-main.onrender.com/api/stories/${id}`, {
       method: "DELETE",
     });
     await refreshStories();

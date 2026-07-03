@@ -328,7 +328,7 @@ function TasksPanel({ storyId, tasks }: { storyId: string; tasks: ScrumTask[] })
                         </button>
                         <button
                           onClick={async () => {
-                            await fetch(`http://127.0.0.1:5000/api/tasks/${t.id}`, {
+                            await fetch(`https://weintegrity-ppm-main.onrender.com/api/tasks/${t.id}`, {
                               method: "DELETE",
                             });
                             window.location.reload();
@@ -606,7 +606,7 @@ function DefectsPanel({ storyId, defects }: { storyId: string; defects: Defect[]
                         </button>
                         <button
                           onClick={() => {
-                            fetch(`http://127.0.0.1:5000/api/defects/${d._id || d.id}`, {
+                            fetch(`https://weintegrity-ppm-main.onrender.com/api/defects/${d._id || d.id}`, {
                               method: "DELETE",
                             }).then(() => window.location.reload());
                           }}

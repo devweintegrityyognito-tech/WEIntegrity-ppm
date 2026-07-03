@@ -39,7 +39,7 @@ const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 
 async function refreshDefects() {
-  const res = await fetch("http://127.0.0.1:5000/api/defects");
+  const res = await fetch("https://weintegrity-ppm-main.onrender.com/api/defects");
   state = await res.json();
   emit();
 }
@@ -66,7 +66,7 @@ export const defectsStore = {
       createdDate?: string;
     },
   ) {
-    await fetch("http://127.0.0.1:5000/api/defects", {
+    await fetch("https://weintegrity-ppm-main.onrender.com/api/defects", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -94,7 +94,7 @@ export const defectsStore = {
     emit();
   },
   async remove(id: string) {
-    await fetch(`http://127.0.0.1:5000/api/defects/${id}`, {
+    await fetch(`https://weintegrity-ppm-main.onrender.com/api/defects/${id}`, {
       method: "DELETE",
     });
     await refreshDefects();
