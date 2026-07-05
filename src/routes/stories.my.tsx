@@ -2,26 +2,16 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { StoriesList } from "@/components/app/StoriesList";
 import { currentUser } from "@/lib/mock-data";
-import { useMemo, useState, useEffect } from "react";
+import { useStories } from "@/lib/stories-store";
 
 export const Route = createFileRoute("/stories/my")({
   component: MyStoriesPage,
 });
 
 function MyStoriesPage() {
-  const [apiStories, setApiStories] = useState<any[]>([]);
+  const stories = useStories();
 
-  useEffect(() => {
-    fetch("https://weintegrity-ppm-main.onrender.com/api/stories")
-      .then((res) => res.json())
-      .then((data) => setApiStories(data))
-      .catch((err) => console.error(err));
-  }, []);
-
-  const mine = useMemo(
-    () => apiStories.filter((s) => s.assigneeId === currentUser.id),
-    [apiStories],
-  );
+  const mine = stories.filter((s) => s.assigneeId === currentUser.id);
 
   return (
     <StoriesList

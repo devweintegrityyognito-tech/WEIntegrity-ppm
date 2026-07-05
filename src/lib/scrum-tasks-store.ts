@@ -10,11 +10,11 @@ export interface ScrumTask {
   storyId: string;
   title: string;
   description: string;
-  assignee: string;
+  assigneeId: string;
   status: TaskStatus;
   priority: TaskPriority;
-  estimatedHours: number;
-  actualHours: number;
+  originalEstimate: number;
+  remainingHours: number;
   startDate: string;
   dueDate: string;
   createdBy: string;
@@ -33,7 +33,10 @@ const emit = () => listeners.forEach((l) => l());
 
 async function refreshTasks() {
   const res = await fetch("https://weintegrity-ppm-main.onrender.com/api/tasks");
-  state = await res.json();
+  const data = await res.json();
+
+  state = data;
+
   emit();
 }
 

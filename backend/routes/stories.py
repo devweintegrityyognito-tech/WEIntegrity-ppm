@@ -69,9 +69,17 @@ def update_story(id):
 @stories_bp.route("/api/stories/<id>", methods=["DELETE"])
 def delete_story(id):
 
+    db.tasks.delete_many({"storyId": id})
+    db.defects.delete_many({"storyId": id})
+
     result = db.stories.delete_one({
-    "_id": ObjectId(id)
+        "_id": ObjectId(id)
     })
+
+    if result.deleted_count == 0:
+        return {"message": "Story not found"},404
+
+    return {"message":"Story deleted"}
 
     if result.deleted_count == 0:
         return {"message": "Story not found"}, 404

@@ -25,7 +25,6 @@ export const Route = createFileRoute("/defects/create")({
 function CreateDefectPage() {
   const navigate = useNavigate();
   const { storyId } = useSearch({ from: "/defects/create" });
-  console.log("DEFECT CREATE storyId:", storyId);
   const [defectTitle, setDefectTitle] = useState("");
   const [projectId, setProjectId] = useState(PROJECTS[0].id);
   const [team, setTeam] = useState(TEAMS[0]);
@@ -65,7 +64,6 @@ function CreateDefectPage() {
       return;
     }
     setSubmitting(true);
-    console.log("Story ID received:", storyId);
 
     fetch("https://weintegrity-ppm-main.onrender.com/api/defects", {
       method: "POST",
@@ -91,11 +89,11 @@ function CreateDefectPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Defect created:", data);
         toast.success("Defect created successfully");
 
         setSubmitting(false);
-        console.log("Navigating to story:", storyId);
+        localStorage.setItem("storyTab", "defects");
+
         navigate({
           to: "/stories/$storyId",
           params: { storyId: storyId! },

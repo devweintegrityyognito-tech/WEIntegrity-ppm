@@ -57,11 +57,15 @@ function CreateStoryPage() {
       toast.error("Please fill all the required fields.");
       return false;
     }
+    return true;
   };
 
   const submit = async (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (!validate()) return;
+
+    const valid = validate();
+
+    if (!valid) return;
     setSubmitting(true);
 
     fetch("https://weintegrity-ppm-main.onrender.com/api/stories", {

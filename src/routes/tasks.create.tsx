@@ -27,7 +27,6 @@ export const Route = createFileRoute("/tasks/create")({
 function CreateTaskPage() {
   const navigate = useNavigate();
   const { storyId } = useSearch({ from: "/tasks/create" });
-  console.log("TASK CREATE storyId:", storyId);
   const [title, setTitle] = useState("");
   const [projectId, setProjectId] = useState(PROJECTS[0].id);
   const [sprintId, setSprintId] = useState(SPRINTS[0].id);
@@ -82,7 +81,6 @@ function CreateTaskPage() {
       return;
     }
     setSubmitting(true);
-    console.log("Story ID received:", storyId);
 
     fetch("https://weintegrity-ppm-main.onrender.com/api/tasks", {
       method: "POST",
@@ -109,11 +107,9 @@ function CreateTaskPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Task created:", data);
         toast.success("Scrum Task created successfully");
 
         setSubmitting(false);
-        console.log("Navigating to story:", storyId);
         navigate({
           to: "/stories/$storyId",
           params: { storyId: storyId! },

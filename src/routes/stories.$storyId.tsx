@@ -45,14 +45,13 @@ export const Route = createFileRoute("/stories/$storyId")({
 function StoryDetail() {
   const { storyId } = useParams({ from: "/stories/$storyId" });
   const sprints = useSprints();
-  const [tab, setTab] = useState<"tasks" | "defects">("tasks");
+  const [tab, setTab] = useState<"tasks" | "defects">(
+    () => (localStorage.getItem("storyTab") as "tasks" | "defects") || "tasks",
+  );
   const stories = useStories();
   const allTasks = useScrumTasks();
   const allDefects = useDefects();
   const story = stories.find((s) => s.id === storyId || s._id === storyId);
-  const sprint = sprints.find((s) => s.id === story?.sprintId);
-  const tasks = allTasks.filter((t) => t.storyId === storyId);
-  const defects = allDefects.filter((d) => d.storyId === storyId);
 
   if (!story) {
     return (
@@ -67,6 +66,12 @@ function StoryDetail() {
       </div>
     );
   }
+
+  const sprint = sprints.find((s) => s.id === story.sprintId);
+
+  const tasks = allTasks.filter((t) => t.storyId === story.id || t.storyId === story._id);
+
+  const defects = allDefects.filter((d) => d.storyId === story.id || d.storyId === story._id);
 
   return (
     <>
@@ -118,18 +123,25 @@ function StoryDetail() {
           <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
             <div className="border-b border-border flex items-center px-3">
               <TabBtn
-                active={tab === "tasks"}
-                onClick={() => setTab("tasks")}
                 icon={<ListChecks className="h-4 w-4" />}
                 count={tasks.length}
+                active={tab === "tasks"}
+                onClick={() => {
+                  localStorage.setItem("storyTab", "tasks");
+                  setTab("tasks");
+                }}
               >
                 Scrum Tasks
               </TabBtn>
+
               <TabBtn
-                active={tab === "defects"}
-                onClick={() => setTab("defects")}
                 icon={<Bug className="h-4 w-4" />}
                 count={defects.length}
+                active={tab === "defects"}
+                onClick={() => {
+                  localStorage.setItem("storyTab", "defects");
+                  setTab("defects");
+                }}
               >
                 Defects
               </TabBtn>
@@ -140,7 +152,7 @@ function StoryDetail() {
                   <TasksPanel storyId={story._id || story.id} tasks={tasks} />
                 </>
               ) : (
-                <DefectsPanel storyId={story._id || story.id} defects={defects} />
+                <DefectsPanel storyId={story._id || story.id} defects={defects} setTab={setTab} />
               )}
             </div>
           </div>
@@ -250,7 +262,7 @@ function TasksPanel({ storyId, tasks }: { storyId: string; tasks: ScrumTask[] })
                 <th className="text-left font-medium py-2.5 pl-3">Title</th>
                 <th className="text-left font-medium py-2.5 w-30">Priority</th>
                 <th className="text-left font-medium py-2.5 w-35">Status</th>
-                <th className="text-left font-medium py-2.5 w-40">Assignee</th>
+                <th className="text-left font-medium py-2.5 w-40">assigneeId</th>
                 <th className="text-right font-medium py-2.5 w-20">Est/Act</th>
                 <th className="text-left font-medium py-2.5 w-27.5 pl-3">Due</th>
                 <th className="w-20" />
@@ -298,16 +310,16 @@ function TasksPanel({ storyId, tasks }: { storyId: string; tasks: ScrumTask[] })
                     <td className="py-2.5">
                       <div className="flex items-center gap-2">
                         <img
-                          src={userById(t.assignee).avatar}
+                          src={userById(t.assigneeId).avatar}
                           className="h-6 w-6 rounded-full border border-border"
                         />
                         <span className="text-xs truncate max-w-30">
-                          {userById(t.assignee).name}
+                          {userById(t.assigneeId).name}
                         </span>
                       </div>
                     </td>
                     <td className="py-2.5 text-right text-xs tabular-nums">
-                      {t.actualHours}/{t.estimatedHours}h
+                      {t.remainingHours}/{t.originalEstimate}h
                     </td>
                     <td className="py-2.5 pl-3 text-xs">
                       {t.dueDate
@@ -328,9 +340,12 @@ function TasksPanel({ storyId, tasks }: { storyId: string; tasks: ScrumTask[] })
                         </button>
                         <button
                           onClick={async () => {
-                            await fetch(`https://weintegrity-ppm-main.onrender.com/api/tasks/${t.id}`, {
-                              method: "DELETE",
-                            });
+                            await fetch(
+                              "https://weintegrity-ppm-main.onrender.com/api/tasks/" + t.id,
+                              {
+                                method: "DELETE",
+                              },
+                            );
                             window.location.reload();
                           }}
                           className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
@@ -364,11 +379,11 @@ function TaskForm({
 }) {
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
-  const [assignee, setAssignee] = useState(initial?.assignee ?? users[0].id);
+  const [assigneeId, setassigneeId] = useState(initial?.assigneeId ?? users[0].id);
   const [status, setStatus] = useState<TaskStatus>(initial?.status ?? "Todo");
   const [priority, setPriority] = useState<TaskPriority>(initial?.priority ?? "Medium");
-  const [estimatedHours, setEst] = useState(initial?.estimatedHours ?? 4);
-  const [actualHours, setAct] = useState(initial?.actualHours ?? 0);
+  const [originalEstimate, setEst] = useState(initial?.originalEstimate ?? 4);
+  const [remainingHours, setRemaining] = useState(initial?.remainingHours ?? 0);
   const [startDate, setStart] = useState(
     initial?.startDate?.slice(0, 10) ?? new Date().toISOString().slice(0, 10),
   );
@@ -384,11 +399,11 @@ function TaskForm({
           storyId,
           title: title.trim(),
           description,
-          assignee,
+          assigneeId,
           status,
           priority,
-          estimatedHours: Number(estimatedHours) || 0,
-          actualHours: Number(actualHours) || 0,
+          originalEstimate: Number(originalEstimate) || 0,
+          remainingHours: Number(remainingHours) || 0,
           startDate: startDate ? new Date(startDate).toISOString() : new Date().toISOString(),
           dueDate: dueDate ? new Date(dueDate).toISOString() : "",
         });
@@ -411,10 +426,10 @@ function TaskForm({
         />
       </Field>
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Assignee">
+        <Field label="assigneeIdId">
           <select
-            value={assignee}
-            onChange={(e) => setAssignee(e.target.value)}
+            value={assigneeId}
+            onChange={(e) => setassigneeId(e.target.value)}
             className={inputCls}
           >
             {users.map((u) => (
@@ -454,7 +469,7 @@ function TaskForm({
           <input
             type="number"
             min={0}
-            value={estimatedHours}
+            value={originalEstimate}
             onChange={(e) => setEst(Number(e.target.value))}
             className={inputCls}
           />
@@ -463,8 +478,8 @@ function TaskForm({
           <input
             type="number"
             min={0}
-            value={actualHours}
-            onChange={(e) => setAct(Number(e.target.value))}
+            value={remainingHours}
+            onChange={(e) => setRemaining(Number(e.target.value))}
             className={inputCls}
           />
         </Field>
@@ -499,7 +514,15 @@ function TaskForm({
 
 /* ============================ Defects ============================ */
 
-function DefectsPanel({ storyId, defects }: { storyId: string; defects: Defect[] }) {
+function DefectsPanel({
+  storyId,
+  defects,
+  setTab,
+}: {
+  storyId: string;
+  defects: Defect[];
+  setTab: React.Dispatch<React.SetStateAction<"tasks" | "defects">>;
+}) {
   const navigate = useNavigate();
   return (
     <div>
@@ -605,10 +628,17 @@ function DefectsPanel({ storyId, defects }: { storyId: string; defects: Defect[]
                           <Pencil className="h-3.5 w-3.5" />
                         </button>
                         <button
-                          onClick={() => {
-                            fetch(`https://weintegrity-ppm-main.onrender.com/api/defects/${d._id || d.id}`, {
-                              method: "DELETE",
-                            }).then(() => window.location.reload());
+                          onClick={async () => {
+                            await fetch(
+                              `https://weintegrity-ppm-main.onrender.com/api/defects/${d._id || d.id}`,
+                              {
+                                method: "DELETE",
+                              },
+                            );
+
+                            localStorage.setItem("storyTab", "defects");
+                            setTab("defects");
+                            window.location.reload();
                           }}
                           className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
                           title="Delete"
