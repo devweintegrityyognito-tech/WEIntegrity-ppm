@@ -47,6 +47,21 @@ def create_defect():
         "message": "Defect created",
         "id": str(result.inserted_id)
     }
+    
+# UPDATE DEFECT
+@defects_bp.route("/api/defects/<id>", methods=["PUT"])
+def update_defect(id):
+
+    data = request.json
+
+    db.defects.update_one(
+        {"_id": ObjectId(id)},
+        {"$set": data}
+    )
+
+    return {
+        "message": "Defect updated"
+    }
 
 
 # DELETE DEFECT

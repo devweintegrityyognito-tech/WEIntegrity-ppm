@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Loader2, Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -14,17 +14,20 @@ import {
 } from "@/lib/defects-store";
 import { currentUser } from "@/lib/mock-data";
 
-export const Route = createFileRoute("/defects/create")({
+export const Route = createFileRoute("/defects/edit/$defectId")({
   validateSearch: (search: Record<string, unknown>) => ({
     storyId: typeof search.storyId === "string" ? search.storyId : "",
   }),
-  head: () => ({ meta: [{ title: "Create Defect - Yognito" }] }),
+  head: () => ({ meta: [{ title: "Update Defect - Yognito" }] }),
   component: CreateDefectPage,
 });
 
 function CreateDefectPage() {
   const navigate = useNavigate();
-  const { storyId } = useSearch({ from: "/defects/create" });
+  const { defectId } = Route.useParams();
+  const { storyId } = useSearch({
+    from: "/defects/edit/$defectId",
+  });
   const [defectTitle, setDefectTitle] = useState("");
   const [projectId, setProjectId] = useState(PROJECTS[0].id);
   const [team, setTeam] = useState(TEAMS[0]);
@@ -40,6 +43,26 @@ function CreateDefectPage() {
   const [expectedResult, setExpectedResult] = useState("");
   const [actualResult, setActualResult] = useState("");
   const [dueDate, setDueDate] = useState("");
+
+  useEffect(() => {
+    fetch(`https://weintegrity-ppm-main.onrender.com/api/defects/${defectId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setDefectTitle(data.defectTitle || "");
+        setProjectId(data.projectId || PROJECTS[0].id);
+        setTeam(data.team || TEAMS[0]);
+        setAssigneeId(data.assignedTo || currentUser.id);
+        setPriority(data.priority || "Medium");
+        setSeverity(data.severity || "Medium");
+        setDefectDescription(data.defectDescription || "");
+        setEnvironment(data.environment || "Development");
+        setStepsToReproduce(data.stepsToReproduce || "");
+        setExpectedResult(data.expectedResult || "");
+        setActualResult(data.actualResult || "");
+        setDueDate(data.dueDate || "");
+      })
+      .catch(console.error);
+  }, [defectId]);
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -65,8 +88,8 @@ function CreateDefectPage() {
     }
     setSubmitting(true);
 
-    fetch("https://weintegrity-ppm-main.onrender.com/api/defects", {
-      method: "POST",
+    fetch(`https://weintegrity-ppm-main.onrender.com/api/defects/${defectId}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -89,11 +112,13 @@ function CreateDefectPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        toast.success("Defect created successfully");
+        toast.success("Defect updated successfully");
 
         setSubmitting(false);
         localStorage.setItem("storyTab", "defects");
 
+        console.log("storyId =", storyId);
+        console.log("defectId =", defectId);
         navigate({
           to: "/stories/$storyId",
           params: { storyId: storyId! },
@@ -101,7 +126,7 @@ function CreateDefectPage() {
       })
       .catch((err) => {
         console.error(err);
-        toast.error("Failed to Create Defect");
+        toast.error("Failed to update defect");
         setSubmitting(false);
       });
   };
@@ -126,7 +151,7 @@ function CreateDefectPage() {
 
         <span>&gt;</span>
 
-        <span className="text-foreground font-medium"> Create Defect </span>
+        <span className="text-foreground font-medium"> Update Defect </span>
       </div>
       <form onSubmit={submit} className="space-y-5">
         <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
@@ -135,7 +160,7 @@ function CreateDefectPage() {
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             <div>
-              <div className="font-semibold leading-tight">Create Defect</div>
+              <div className="font-semibold leading-tight">Update Defect</div>
               <div className="text-xs text-muted-foreground">Create a Defect for this Story</div>
             </div>
           </div>
@@ -295,7 +320,7 @@ function CreateDefectPage() {
                 </>
               ) : (
                 <>
-                  <Plus className="h-4 w-4" /> Create Defect
+                  <Plus className="h-4 w-4" /> Update Defect
                 </>
               )}
             </button>

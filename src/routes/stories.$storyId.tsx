@@ -4,20 +4,9 @@ import { useDefects } from "@/lib/defects-store";
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Plus, Pencil, Trash2, X } from "lucide-react";
+import { Badge, priorityTone } from "@/components/app/Badge";
 import {
-  ArrowLeft,
-  Plus,
-  Pencil,
-  Trash2,
-  Bug,
-  ListChecks,
-  X,
-  Calendar,
-  User as UserIcon,
-} from "lucide-react";
-import { Badge, priorityTone, statusTone } from "@/components/app/Badge";
-import {
-  scrumTasksStore,
   TASK_STATUSES,
   TASK_PRIORITIES,
   type ScrumTask,
@@ -36,6 +25,7 @@ import {
 import { useSprints } from "@/lib/sprints-store";
 import { users, userById } from "@/lib/mock-data";
 import type { Story } from "@/lib/stories-store";
+import StoryViewForm from "@/components/story/StoryViewForm";
 
 export const Route = createFileRoute("/stories/$storyId")({
   head: () => ({ meta: [{ title: "Story Detail — Yognito" }] }),
@@ -43,11 +33,10 @@ export const Route = createFileRoute("/stories/$storyId")({
 });
 
 function StoryDetail() {
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const { storyId } = useParams({ from: "/stories/$storyId" });
   const sprints = useSprints();
-  const [tab, setTab] = useState<"tasks" | "defects">(
-    () => (localStorage.getItem("storyTab") as "tasks" | "defects") || "tasks",
-  );
+
   const stories = useStories();
   const allTasks = useScrumTasks();
   const allDefects = useDefects();
@@ -67,176 +56,63 @@ function StoryDetail() {
     );
   }
 
-  const sprint = sprints.find((s) => s.id === story.sprintId);
-
   const tasks = allTasks.filter((t) => t.storyId === story.id || t.storyId === story._id);
 
   const defects = allDefects.filter((d) => d.storyId === story.id || d.storyId === story._id);
 
   return (
     <>
-      <Link
-        to="/stories/all"
-        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-3"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" /> Stories
-      </Link>
+      <div className="space-y-5">
+        {/* Breadcrumb */}
 
-      <div className="flex items-start justify-between flex-wrap gap-3 mb-5">
-        <div className="min-w-0">
-          <div className="font-mono text-xs text-muted-foreground">{story.key}</div>
-          <h1 className="text-2xl font-semibold tracking-tight mt-1">{story.title}</h1>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <Badge tone={priorityTone(story.priority)}>{story.priority}</Badge>
-            <Badge tone={statusTone(story.status)} dot>
-              {story.status}
-            </Badge>
-            {sprint && (
-              <span className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5" /> {sprint.sprintName}
-              </span>
-            )}
-            <span className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
-              <UserIcon className="h-3.5 w-3.5" /> {userById(story.assigneeId).name}
-            </span>
-          </div>
-        </div>
+        {/* Back */}
+        <Link
+          to="/stories/all"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Stories
+        </Link>
+
+        <StoryViewForm story={story} />
       </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
-        <div className="xl:col-span-2 space-y-5">
-          <div className="rounded-xl bg-card border border-border shadow-card p-5">
-            <h3 className="font-semibold text-sm mb-2">Description</h3>
-            <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-              {story.description || "No description provided."}
-            </p>
-            {story.acceptanceCriteria && (
-              <>
-                <h4 className="font-semibold text-xs mt-4 mb-1.5 uppercase tracking-wider text-muted-foreground">
-                  Acceptance criteria
-                </h4>
-                <p className="text-sm whitespace-pre-wrap">{story.acceptanceCriteria}</p>
-              </>
-            )}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
+          <div className="px-5 py-4 border-b border-border">
+            <h3 className="text-lg font-semibold">Scrum Tasks</h3>
           </div>
 
-          <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
-            <div className="border-b border-border flex items-center px-3">
-              <TabBtn
-                icon={<ListChecks className="h-4 w-4" />}
-                count={tasks.length}
-                active={tab === "tasks"}
-                onClick={() => {
-                  localStorage.setItem("storyTab", "tasks");
-                  setTab("tasks");
-                }}
-              >
-                Scrum Tasks
-              </TabBtn>
-
-              <TabBtn
-                icon={<Bug className="h-4 w-4" />}
-                count={defects.length}
-                active={tab === "defects"}
-                onClick={() => {
-                  localStorage.setItem("storyTab", "defects");
-                  setTab("defects");
-                }}
-              >
-                Defects
-              </TabBtn>
-            </div>
-            <div className="p-5">
-              {tab === "tasks" ? (
-                <>
-                  <TasksPanel storyId={story._id || story.id} tasks={tasks} />
-                </>
-              ) : (
-                <DefectsPanel storyId={story._id || story.id} defects={defects} setTab={setTab} />
-              )}
-            </div>
+          <div className="p-5">
+            <TasksPanel storyId={story._id || story.id} tasks={tasks} onView={setSelectedTaskId} />
           </div>
         </div>
 
-        <aside className="space-y-3">
-          <div className="rounded-xl bg-card border border-border shadow-card p-5">
-            <h3 className="font-semibold text-sm mb-3">Details</h3>
-            <DetailRow label="Type" value={story.type} />
-            <DetailRow label="Story points" value={String(story.storyPoints)} />
-            <DetailRow label="Team" value={story.team} />
-            <DetailRow label="Due date" value={new Date(story.dueDate).toLocaleDateString()} />
-            <DetailRow label="Created" value={new Date(story.createdAt).toLocaleDateString()} />
-            {story.labels.length > 0 && (
-              <div className="mt-3">
-                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
-                  Labels
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {story.labels.map((l) => (
-                    <span
-                      key={l}
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground"
-                    >
-                      #{l}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+        <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
+          <div className="px-5 py-4 border-b border-border">
+            <h3 className="text-lg font-semibold">Defects</h3>
           </div>
-        </aside>
+
+          <div className="p-5">
+            <DefectsPanel storyId={story._id || story.id} defects={defects} />
+          </div>
+        </div>
       </div>
     </>
   );
 }
 
-function DetailRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between py-1.5 text-sm border-b border-border last:border-0">
-      <span className="text-muted-foreground text-xs">{label}</span>
-      <span className="font-medium">{value}</span>
-    </div>
-  );
-}
-
-function TabBtn({
-  active,
-  onClick,
-  icon,
-  children,
-  count,
-}: {
-  active: boolean;
-  onClick: () => void;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-  count: number;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`relative inline-flex items-center gap-2 px-4 h-11 text-sm font-medium transition ${
-        active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-      }`}
-    >
-      {icon}
-      {children}
-      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground tabular-nums">
-        {count}
-      </span>
-      {active && (
-        <span className="absolute left-0 right-0 -bottom-px h-0.5 bg-gradient-primary rounded-full" />
-      )}
-    </button>
-  );
-}
-
 /* ============================ Tasks ============================ */
 
-function TasksPanel({ storyId, tasks }: { storyId: string; tasks: ScrumTask[] }) {
+function TasksPanel({
+  storyId,
+  tasks,
+  onView,
+}: {
+  storyId: string;
+  tasks: ScrumTask[];
+  onView?: (id: string) => void;
+}) {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<Defect | null>(null);
 
   return (
     <div>
@@ -246,23 +122,23 @@ function TasksPanel({ storyId, tasks }: { storyId: string; tasks: ScrumTask[] })
         </div>
         <button
           onClick={() => navigate({ to: "/tasks/create", search: { storyId: storyId } })}
-          className="h-8 px-3 rounded-lg bg-gradient-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1.5 shadow-elegant"
+          className="h-9 px-3 rounded-lg bg-gradient-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1.5 shadow-elegant"
         >
           <Plus className="h-3.5 w-3.5" /> New Task
         </button>
       </div>
 
       {tasks.length === 0 ? (
-        <div className="py-10 text-center text-sm text-muted-foreground">No scrum tasks yet.</div>
+        <div className="py-10 text-center text-sm text-muted-foreground">No Scrum Tasks Found</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-175">
             <thead>
-              <tr className="text-[11px] uppercase tracking-wider text-muted-foreground bg-muted/40">
+              <tr className="text-xs uppercase tracking-wider text-muted-foreground bg-muted/40">
                 <th className="text-left font-medium py-2.5 pl-3">Title</th>
                 <th className="text-left font-medium py-2.5 w-30">Priority</th>
                 <th className="text-left font-medium py-2.5 w-35">Status</th>
-                <th className="text-left font-medium py-2.5 w-40">assigneeId</th>
+                <th className="text-left font-medium py-2.5 w-40">Assigned To</th>
                 <th className="text-right font-medium py-2.5 w-20">Est/Act</th>
                 <th className="text-left font-medium py-2.5 w-27.5 pl-3">Due</th>
                 <th className="w-20" />
@@ -280,13 +156,19 @@ function TasksPanel({ storyId, tasks }: { storyId: string; tasks: ScrumTask[] })
                     className="border-t border-border hover:bg-muted/30 group"
                   >
                     <td className="py-2.5 pl-3 font-medium">
-                      <Link
-                        to="/tasks/$taskId"
-                        params={{ taskId: t.id }}
-                        className="text-primary hover:underline"
+                      <button
+                        onClick={() =>
+                          navigate({
+                            to: "/tasks/$taskId",
+                            params: {
+                              taskId: t.id,
+                            },
+                          })
+                        }
+                        className="text-primary hover:underline text-left cursor-pointer"
                       >
                         {t.title}
-                      </Link>
+                      </button>
                     </td>
 
                     <td className="py-2.5">
@@ -332,7 +214,13 @@ function TasksPanel({ storyId, tasks }: { storyId: string; tasks: ScrumTask[] })
                     <td className="py-2.5 pr-3 text-right">
                       <div className="inline-flex opacity-0 group-hover:opacity-100 transition">
                         <button
-                          onClick={() => {}}
+                          onClick={() =>
+                            navigate({
+                              to: "/tasks/edit/$taskId",
+                              params: { taskId: t.id },
+                              search: { storyId },
+                            })
+                          }
                           className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
                           title="Edit"
                         >
@@ -340,12 +228,9 @@ function TasksPanel({ storyId, tasks }: { storyId: string; tasks: ScrumTask[] })
                         </button>
                         <button
                           onClick={async () => {
-                            await fetch(
-                              "https://weintegrity-ppm-main.onrender.com/api/tasks/" + t.id,
-                              {
-                                method: "DELETE",
-                              },
-                            );
+                            await fetch(`https://weintegrity-ppm-main.onrender.com/api/tasks/${t._id || t.id}`, {
+                              method: "DELETE",
+                            });
                             window.location.reload();
                           }}
                           className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
@@ -404,6 +289,7 @@ function TaskForm({
           priority,
           originalEstimate: Number(originalEstimate) || 0,
           remainingHours: Number(remainingHours) || 0,
+          actualHoursSpent: 0,
           startDate: startDate ? new Date(startDate).toISOString() : new Date().toISOString(),
           dueDate: dueDate ? new Date(dueDate).toISOString() : "",
         });
@@ -514,15 +400,7 @@ function TaskForm({
 
 /* ============================ Defects ============================ */
 
-function DefectsPanel({
-  storyId,
-  defects,
-  setTab,
-}: {
-  storyId: string;
-  defects: Defect[];
-  setTab: React.Dispatch<React.SetStateAction<"tasks" | "defects">>;
-}) {
+function DefectsPanel({ storyId, defects }: { storyId: string; defects: Defect[] }) {
   const navigate = useNavigate();
   return (
     <div>
@@ -535,19 +413,19 @@ function DefectsPanel({
             console.log("Navigate storyId =", storyId);
             window.location.href = `/defects/create?storyId=${storyId}`;
           }}
-          className="h-8 px-3 rounded-lg bg-gradient-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1.5 shadow-elegant"
+          className="h-9 px-3 rounded-lg bg-gradient-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1.5 shadow-elegant"
         >
           <Plus className="h-3.5 w-3.5" /> New Defect
         </button>
       </div>
 
       {defects.length === 0 ? (
-        <div className="py-10 text-center text-sm text-muted-foreground">No defects reported.</div>
+        <div className="py-10 text-center text-sm text-muted-foreground">No Defects Found</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-175">
             <thead>
-              <tr className="text-[11px] uppercase tracking-wider text-muted-foreground bg-muted/40">
+              <tr className="text-xs uppercase tracking-wider text-muted-foreground bg-muted/40">
                 <th className="text-left font-medium py-2.5 pl-3">Title</th>
                 <th className="text-left font-medium py-2.5 w-27.5">Severity</th>
                 <th className="text-left font-medium py-2.5 w-27.5">Priority</th>
@@ -569,13 +447,19 @@ function DefectsPanel({
                     className="border-t border-border hover:bg-muted/30 group"
                   >
                     <td className="py-2.5 pl-3 font-medium">
-                      <Link
-                        to="/defects/$defectId"
-                        params={{ defectId: d._id || d.id }}
-                        className="text-primary hover:underline"
+                      <button
+                        onClick={() =>
+                          navigate({
+                            to: "/defects/$defectId",
+                            params: {
+                              defectId: d.id,
+                            },
+                          })
+                        }
+                        className="text-primary hover:underline text-left cursor-pointer"
                       >
                         {d.defectTitle}
-                      </Link>
+                      </button>
                     </td>
 
                     <td className="py-2.5">
@@ -620,7 +504,19 @@ function DefectsPanel({
                       <div className="inline-flex opacity-0 group-hover:opacity-100 transition">
                         <button
                           onClick={() => {
-                            console.log("Edit Defect clicked");
+                            console.log("clicked");
+                            console.log("storyId =", storyId);
+                            console.log("defect =", d);
+
+                            navigate({
+                              to: "/defects/edit/$defectId",
+                              params: {
+                                defectId: d._id || d.id,
+                              },
+                              search: {
+                                storyId,
+                              },
+                            });
                           }}
                           className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
                           title="Edit"
@@ -629,15 +525,11 @@ function DefectsPanel({
                         </button>
                         <button
                           onClick={async () => {
-                            await fetch(
-                              `https://weintegrity-ppm-main.onrender.com/api/defects/${d._id || d.id}`,
-                              {
-                                method: "DELETE",
-                              },
-                            );
+                            await fetch(`https://weintegrity-ppm-main.onrender.com/api/defects/${d._id || d.id}`, {
+                              method: "DELETE",
+                            });
 
                             localStorage.setItem("storyTab", "defects");
-                            setTab("defects");
                             window.location.reload();
                           }}
                           className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"

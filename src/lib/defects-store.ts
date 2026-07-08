@@ -7,17 +7,41 @@ export type DefectStatus = "Open" | "In Progress" | "Resolved" | "Closed" | "Reo
 
 export interface Defect {
   _id?: string;
+
   id: string;
+
   storyId: string;
+
   defectTitle: string;
   defectDescription: string;
+
+  projectId?: string;
+  sprintId?: string;
+  scrumTaskId?: string;
+
+  type?: string;
+
   severity: DefectSeverity;
   priority: DefectPriority;
   status: DefectStatus;
+
+  environment?: string;
+
   reportedBy: string;
   assignedTo: string;
+
+  stepsToReproduce?: string;
+  expectedResult?: string;
+  actualResult?: string;
+
+  rootCause?: string;
+  resolutionNotes?: string;
+
+  dueDate?: string;
+
   createdDate: string;
   resolvedDate: string | null;
+
   createdAt: string;
   updatedAt: string;
 }

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Hash, Loader2, Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -15,15 +15,16 @@ import {
   type StoryStatus,
 } from "@/lib/stories-store";
 import { currentUser } from "@/lib/mock-data";
-import StoryForm from "@/components/story/StoryForm";
+import { Pencil } from "lucide-react";
 
-export const Route = createFileRoute("/stories/create")({
-  head: () => ({ meta: [{ title: "Create Story — Yognito" }] }),
+export const Route = createFileRoute("/stories/edit/$storyId")({
+  head: () => ({ meta: [{ title: "Update Story — Yognito" }] }),
   component: CreateStoryPage,
 });
 
 function CreateStoryPage() {
   const navigate = useNavigate();
+  const { storyId } = Route.useParams();
   const [title, setTitle] = useState("");
   const [projectId, setProjectId] = useState(PROJECTS[0].id);
   const [sprintId, setSprintId] = useState(SPRINTS[0].id);
@@ -43,6 +44,26 @@ function CreateStoryPage() {
   const [status] = useState<StoryStatus>("Backlog");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetch(`https://weintegrity-ppm-main.onrender.com/api/stories/${storyId}`)
+      .then((res) => res.json())
+      .then((story) => {
+        setTitle(story.title);
+        setProjectId(story.projectId);
+        setSprintId(story.sprintId);
+        setEpicId(story.epicId);
+        setBusinessValue(story.businessValue);
+        setLabels((story.labels || []).join(", "));
+        setAssigneeId(story.assigneeId);
+        setPriority(story.priority);
+        setStoryPoints(story.storyPoints);
+        setDueDate(story.dueDate.slice(0, 10));
+        setDescription(story.description);
+        setAcceptanceCriteria(story.acceptanceCriteria);
+      })
+      .catch(console.error);
+  }, [storyId]);
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -69,8 +90,8 @@ function CreateStoryPage() {
     if (!valid) return;
     setSubmitting(true);
 
-    fetch("https://weintegrity-ppm-main.onrender.com/api/stories", {
-      method: "POST",
+    fetch(`https://weintegrity-ppm-main.onrender.com/api/stories/${storyId}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -95,10 +116,8 @@ function CreateStoryPage() {
       }),
     })
       .then((res) => res.json())
-      .then((created) => {
-        toast.success(`Story ${created.key} created`, {
-          description: created.title,
-        });
+      .then(() => {
+        toast.success("Story updated successfully");
 
         setSubmitting(false);
 
@@ -108,7 +127,7 @@ function CreateStoryPage() {
       })
       .catch((err) => {
         console.error(err);
-        toast.error("Failed to create story");
+        toast.error("Failed to Update Story");
         setSubmitting(false);
       });
   };
@@ -134,8 +153,8 @@ function CreateStoryPage() {
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             <div>
-              <div className="font-semibold leading-tight">Create story</div>
-              <div className="text-xs text-muted-foreground">A new work item in the backlog</div>
+              <div className="font-semibold leading-tight">Update Story</div>
+              <div className="text-xs text-muted-foreground">Update an existing work item</div>
             </div>
           </div>
 
@@ -313,11 +332,11 @@ function CreateStoryPage() {
             >
               {submitting ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Creating…
+                  <Loader2 className="h-4 w-4 animate-spin" /> Updating...
                 </>
               ) : (
                 <>
-                  <Plus className="h-4 w-4" /> Create Story
+                  <Pencil className="h-4 w-4" /> Update Story
                 </>
               )}
             </button>

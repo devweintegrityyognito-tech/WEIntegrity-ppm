@@ -9,13 +9,12 @@ import {
   SPRINTS,
   PROJECTS,
   TEAMS,
-  STORY_TYPES,
   type StoryPriority,
   type StoryStatus,
-  type StoryType,
 } from "@/lib/stories-store";
 import { currentUser } from "@/lib/mock-data";
 
+const TASK_TYPES = ["Development", "Testing", "Design", "Documentation", "DevOps", "Analysis"];
 export const Route = createFileRoute("/tasks/create")({
   validateSearch: (search: Record<string, unknown>) => ({
     storyId: typeof search.storyId === "string" ? search.storyId : "",
@@ -33,7 +32,7 @@ function CreateTaskPage() {
   const [team, setTeam] = useState(TEAMS[0]);
   const [assigneeId, setAssigneeId] = useState(currentUser.id);
   const [priority, setPriority] = useState<StoryPriority>("Medium");
-  const [type, setType] = useState<StoryType>("Story");
+  const [type, setType] = useState("Development");
   const [originalEstimate, setOriginalEstimate] = useState(8);
   const [remainingHours, setRemainingHours] = useState(8);
   const [actualHoursSpent, setActualHoursSpent] = useState(0);
@@ -51,7 +50,7 @@ function CreateTaskPage() {
   const validate = () => {
     const e: Record<string, string> = {};
 
-    if (!title.trim()) e.title = "Short description is required";
+    if (!title.trim()) e.title = "title is required";
     else if (title.length > 140) e.title = "Keep it under 140 characters";
 
     if (!projectId) e.projectId = "Select a project";
@@ -99,7 +98,7 @@ function CreateTaskPage() {
         projectId,
         team,
         type,
-        dueDate: new Date(dueDate).toISOString(),
+        dueDate: dueDate ? new Date(dueDate).toISOString() : "",
         originalEstimate,
         remainingHours,
         actualHoursSpent,
@@ -159,7 +158,7 @@ function CreateTaskPage() {
           </div>
 
           <div className="px-6 py-6 space-y-5">
-            <Field label="Short description" required error={errors.title}>
+            <Field label="Title" required error={errors.title}>
               <input
                 value={title}
                 onChange={(e) => {
@@ -216,8 +215,11 @@ function CreateTaskPage() {
               <Field label="Type" required>
                 <FormSelect
                   value={type}
-                  onChange={(v) => setType(v as StoryType)}
-                  options={STORY_TYPES.map((t) => ({ value: t, label: t }))}
+                  onChange={(v) => setType(v)}
+                  options={TASK_TYPES.map((t) => ({
+                    value: t,
+                    label: t,
+                  }))}
                 />
               </Field>
 
@@ -265,7 +267,7 @@ function CreateTaskPage() {
                 </div>
               </Field>
 
-              <Field label="Deadline" required error={errors.dueDate}>
+              <Field label="Deadline" error={errors.dueDate}>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                   <input

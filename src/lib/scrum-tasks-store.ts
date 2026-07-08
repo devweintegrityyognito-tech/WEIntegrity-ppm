@@ -15,6 +15,7 @@ export interface ScrumTask {
   priority: TaskPriority;
   originalEstimate: number;
   remainingHours: number;
+  actualHoursSpent: number;
   startDate: string;
   dueDate: string;
   createdBy: string;
@@ -53,9 +54,9 @@ export const scrumTasksStore = {
     return state.filter((t) => t.storyId === storyId);
   },
   async add(
-    input: Omit<ScrumTask, "id" | "createdAt" | "updatedAt" | "createdBy" | "actualHours"> & {
+    input: Omit<ScrumTask, "id" | "createdAt" | "updatedAt" | "createdBy" | "actualHoursSpent"> & {
       createdBy?: string;
-      actualHours?: number;
+      actualHoursSpent?: number;
     },
   ) {
     await fetch("https://weintegrity-ppm-main.onrender.com/api/tasks", {

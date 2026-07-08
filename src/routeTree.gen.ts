@@ -36,6 +36,9 @@ import { Route as StoriesAllRouteImport } from './routes/stories.all'
 import { Route as StoriesStoryIdRouteImport } from './routes/stories.$storyId'
 import { Route as DefectsCreateRouteImport } from './routes/defects.create'
 import { Route as DefectsDefectIdRouteImport } from './routes/defects.$defectId'
+import { Route as TasksEditTaskIdRouteImport } from './routes/tasks.edit.$taskId'
+import { Route as StoriesEditStoryIdRouteImport } from './routes/stories.edit.$storyId'
+import { Route as DefectsEditDefectIdRouteImport } from './routes/defects.edit.$defectId'
 
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
@@ -172,6 +175,21 @@ const DefectsDefectIdRoute = DefectsDefectIdRouteImport.update({
   path: '/defects/$defectId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TasksEditTaskIdRoute = TasksEditTaskIdRouteImport.update({
+  id: '/tasks/edit/$taskId',
+  path: '/tasks/edit/$taskId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoriesEditStoryIdRoute = StoriesEditStoryIdRouteImport.update({
+  id: '/edit/$storyId',
+  path: '/edit/$storyId',
+  getParentRoute: () => StoriesRoute,
+} as any)
+const DefectsEditDefectIdRoute = DefectsEditDefectIdRouteImport.update({
+  id: '/defects/edit/$defectId',
+  path: '/defects/edit/$defectId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -201,6 +219,9 @@ export interface FileRoutesByFullPath {
   '/tasks/$taskId': typeof TasksTaskIdRoute
   '/tasks/create': typeof TasksCreateRoute
   '/stories/': typeof StoriesIndexRoute
+  '/defects/edit/$defectId': typeof DefectsEditDefectIdRoute
+  '/stories/edit/$storyId': typeof StoriesEditStoryIdRoute
+  '/tasks/edit/$taskId': typeof TasksEditTaskIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -229,6 +250,9 @@ export interface FileRoutesByTo {
   '/tasks/$taskId': typeof TasksTaskIdRoute
   '/tasks/create': typeof TasksCreateRoute
   '/stories': typeof StoriesIndexRoute
+  '/defects/edit/$defectId': typeof DefectsEditDefectIdRoute
+  '/stories/edit/$storyId': typeof StoriesEditStoryIdRoute
+  '/tasks/edit/$taskId': typeof TasksEditTaskIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -259,6 +283,9 @@ export interface FileRoutesById {
   '/tasks/$taskId': typeof TasksTaskIdRoute
   '/tasks/create': typeof TasksCreateRoute
   '/stories/': typeof StoriesIndexRoute
+  '/defects/edit/$defectId': typeof DefectsEditDefectIdRoute
+  '/stories/edit/$storyId': typeof StoriesEditStoryIdRoute
+  '/tasks/edit/$taskId': typeof TasksEditTaskIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -290,6 +317,9 @@ export interface FileRouteTypes {
     | '/tasks/$taskId'
     | '/tasks/create'
     | '/stories/'
+    | '/defects/edit/$defectId'
+    | '/stories/edit/$storyId'
+    | '/tasks/edit/$taskId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -318,6 +348,9 @@ export interface FileRouteTypes {
     | '/tasks/$taskId'
     | '/tasks/create'
     | '/stories'
+    | '/defects/edit/$defectId'
+    | '/stories/edit/$storyId'
+    | '/tasks/edit/$taskId'
   id:
     | '__root__'
     | '/'
@@ -347,6 +380,9 @@ export interface FileRouteTypes {
     | '/tasks/$taskId'
     | '/tasks/create'
     | '/stories/'
+    | '/defects/edit/$defectId'
+    | '/stories/edit/$storyId'
+    | '/tasks/edit/$taskId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -372,6 +408,8 @@ export interface RootRouteChildren {
   DefectsCreateRoute: typeof DefectsCreateRoute
   TasksTaskIdRoute: typeof TasksTaskIdRoute
   TasksCreateRoute: typeof TasksCreateRoute
+  DefectsEditDefectIdRoute: typeof DefectsEditDefectIdRoute
+  TasksEditTaskIdRoute: typeof TasksEditTaskIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -565,6 +603,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DefectsDefectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tasks/edit/$taskId': {
+      id: '/tasks/edit/$taskId'
+      path: '/tasks/edit/$taskId'
+      fullPath: '/tasks/edit/$taskId'
+      preLoaderRoute: typeof TasksEditTaskIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stories/edit/$storyId': {
+      id: '/stories/edit/$storyId'
+      path: '/edit/$storyId'
+      fullPath: '/stories/edit/$storyId'
+      preLoaderRoute: typeof StoriesEditStoryIdRouteImport
+      parentRoute: typeof StoriesRoute
+    }
+    '/defects/edit/$defectId': {
+      id: '/defects/edit/$defectId'
+      path: '/defects/edit/$defectId'
+      fullPath: '/defects/edit/$defectId'
+      preLoaderRoute: typeof DefectsEditDefectIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -574,6 +633,7 @@ interface StoriesRouteChildren {
   StoriesCreateRoute: typeof StoriesCreateRoute
   StoriesMyRoute: typeof StoriesMyRoute
   StoriesIndexRoute: typeof StoriesIndexRoute
+  StoriesEditStoryIdRoute: typeof StoriesEditStoryIdRoute
 }
 
 const StoriesRouteChildren: StoriesRouteChildren = {
@@ -582,6 +642,7 @@ const StoriesRouteChildren: StoriesRouteChildren = {
   StoriesCreateRoute: StoriesCreateRoute,
   StoriesMyRoute: StoriesMyRoute,
   StoriesIndexRoute: StoriesIndexRoute,
+  StoriesEditStoryIdRoute: StoriesEditStoryIdRoute,
 }
 
 const StoriesRouteWithChildren =
@@ -610,6 +671,8 @@ const rootRouteChildren: RootRouteChildren = {
   DefectsCreateRoute: DefectsCreateRoute,
   TasksTaskIdRoute: TasksTaskIdRoute,
   TasksCreateRoute: TasksCreateRoute,
+  DefectsEditDefectIdRoute: DefectsEditDefectIdRoute,
+  TasksEditTaskIdRoute: TasksEditTaskIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

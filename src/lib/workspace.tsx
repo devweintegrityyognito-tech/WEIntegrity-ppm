@@ -51,6 +51,7 @@ export const PPM_ROUTES = [
   "/projects",
   "/stories",
   "/tasks",
+  "/defects",
   "/board",
   "/sprints",
   "/team",

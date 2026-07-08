@@ -50,6 +50,20 @@ def create_story():
         "id": str(result.inserted_id)
     }, 201
 
+# GET single story
+@stories_bp.route("/api/stories/<id>", methods=["GET"])
+def get_story(id):
+
+    story = db.stories.find_one({"_id": ObjectId(id)})
+
+    if not story:
+        return {"message": "Story not found"}, 404
+
+    story["id"] = str(story["_id"])
+    del story["_id"]
+
+    return story
+
 # UPDATE story
 @stories_bp.route("/api/stories/<id>", methods=["PUT"])
 def update_story(id):

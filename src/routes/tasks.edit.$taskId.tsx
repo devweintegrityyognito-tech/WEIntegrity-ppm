@@ -1,38 +1,43 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, Hash, Loader2, Plus, Sparkles } from "lucide-react";
+import { Calendar, Hash, Loader2, Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import {
   PRIORITIES,
   ASSIGNEES,
   SPRINTS,
   PROJECTS,
-  EPICS,
-  BUSINESS_VALUES,
-  type BusinessValue,
+  TEAMS,
   type StoryPriority,
   type StoryStatus,
 } from "@/lib/stories-store";
 import { currentUser } from "@/lib/mock-data";
-import StoryForm from "@/components/story/StoryForm";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/stories/create")({
-  head: () => ({ meta: [{ title: "Create Story — Yognito" }] }),
-  component: CreateStoryPage,
+const TASK_TYPES = ["Development", "Testing", "Design", "Documentation", "DevOps", "Analysis"];
+export const Route = createFileRoute("/tasks/edit/$taskId")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    storyId: typeof search.storyId === "string" ? search.storyId : "",
+  }),
+  head: () => ({ meta: [{ title: "Update Scrum Task - Yognito" }] }),
+  component: CreateTaskPage,
 });
 
-function CreateStoryPage() {
+function CreateTaskPage() {
   const navigate = useNavigate();
+  const { taskId } = Route.useParams();
+  const { storyId } = useSearch({ from: "/tasks/edit/$taskId" });
   const [title, setTitle] = useState("");
   const [projectId, setProjectId] = useState(PROJECTS[0].id);
   const [sprintId, setSprintId] = useState(SPRINTS[0].id);
-  const [epicId, setEpicId] = useState("");
-  const [businessValue, setBusinessValue] = useState<BusinessValue>("Medium");
-  const [labels, setLabels] = useState("");
+  const [team, setTeam] = useState(TEAMS[0]);
   const [assigneeId, setAssigneeId] = useState(currentUser.id);
   const [priority, setPriority] = useState<StoryPriority>("Medium");
-  const [storyPoints, setStoryPoints] = useState(3);
+  const [type, setType] = useState("Development");
+  const [originalEstimate, setOriginalEstimate] = useState(8);
+  const [remainingHours, setRemainingHours] = useState(8);
+  const [actualHoursSpent, setActualHoursSpent] = useState(0);
   const [dueDate, setDueDate] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() + 7);
@@ -40,41 +45,71 @@ function CreateStoryPage() {
   });
   const [description, setDescription] = useState("");
   const [acceptanceCriteria, setAcceptanceCriteria] = useState("");
-  const [status] = useState<StoryStatus>("Backlog");
+  const [status] = useState<StoryStatus>("Todo");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
 
+  useEffect(() => {
+    fetch(`https://weintegrity-ppm-main.onrender.com/api/tasks/${taskId}`)
+      .then((res) => res.json())
+      .then((task) => {
+        setTitle(task.title);
+        setProjectId(task.projectId);
+        setSprintId(task.sprintId);
+        setTeam(task.team);
+        setAssigneeId(task.assigneeId);
+        setPriority(task.priority);
+        setType(task.type);
+        setOriginalEstimate(task.originalEstimate);
+        setRemainingHours(task.remainingHours);
+        setActualHoursSpent(task.actualHoursSpent);
+        setDescription(task.description);
+        setAcceptanceCriteria(task.acceptanceCriteria);
+        setDueDate(task.dueDate?.slice(0, 10));
+      });
+  }, [taskId]);
+
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!title.trim()) e.title = "Please fill all the required fields.";
+
+    if (!title.trim()) e.title = "title is required";
     else if (title.length > 140) e.title = "Keep it under 140 characters";
+
     if (!projectId) e.projectId = "Select a project";
     if (!assigneeId) e.assigneeId = "Select an assignee";
-    if (!description.trim()) e.description = "Please fill all the required fields.";
-    if (!acceptanceCriteria.trim()) e.acceptanceCriteria = "Please fill all the required fields.";
-    if (storyPoints <= 0) e.storyPoints = "Story Points must be greater than 0";
+    if (!description.trim()) e.description = "Description is required";
+
+    if (!acceptanceCriteria.trim()) e.acceptanceCriteria = "Acceptance Criteria is required";
+
+    if (!sprintId) e.sprintId = "Select a Sprint";
+
+    if (originalEstimate === 0) e.originalEstimate = "Estimate must be greater than 0";
+
+    if (originalEstimate < 0) e.originalEstimate = "Estimate cannot be negative";
+
+    if (remainingHours === 0) e.remainingHours = "Remaining Hours must be greater than 0";
+
+    if (remainingHours < 0) e.remainingHours = "Remaining Hours cannot be negative";
+
     setErrors(e);
-    if (Object.keys(e).length > 0) {
-      toast.error("Please fill all the required fields.");
-      return false;
-    }
-    return true;
+    return Object.keys(e).length === 0;
   };
 
   const submit = async (ev: React.FormEvent) => {
     ev.preventDefault();
-
-    const valid = validate();
-
-    if (!valid) return;
+    if (!validate()) {
+      toast.error("Please fill all the required fields.");
+      return;
+    }
     setSubmitting(true);
 
-    fetch("https://weintegrity-ppm-main.onrender.com/api/stories", {
-      method: "POST",
+    fetch(`https://weintegrity-ppm-main.onrender.com/api/tasks/${taskId}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        storyId,
         title: title.trim(),
         description: description.trim(),
         acceptanceCriteria: acceptanceCriteria.trim(),
@@ -82,33 +117,28 @@ function CreateStoryPage() {
         status,
         assigneeId,
         sprintId,
-        epicId,
-        reporter: currentUser.name,
-        businessValue,
         projectId,
-        dueDate: new Date(dueDate).toISOString(),
-        storyPoints,
-        labels: labels
-          .split(",")
-          .map((l) => l.trim())
-          .filter(Boolean),
+        team,
+        type,
+        dueDate: dueDate ? new Date(dueDate).toISOString() : "",
+        originalEstimate,
+        remainingHours,
+        actualHoursSpent,
       }),
     })
       .then((res) => res.json())
-      .then((created) => {
-        toast.success(`Story ${created.key} created`, {
-          description: created.title,
-        });
+      .then((data) => {
+        toast.success("Scrum Task updated successfully");
 
         setSubmitting(false);
-
         navigate({
-          to: "/stories/all",
+          to: "/stories/$storyId",
+          params: { storyId: storyId! },
         });
       })
       .catch((err) => {
         console.error(err);
-        toast.error("Failed to create story");
+        toast.error("Failed to Update Scrum Task");
         setSubmitting(false);
       });
   };
@@ -120,13 +150,21 @@ function CreateStoryPage() {
       transition={{ duration: 0.2 }}
       className="max-w-4xl mx-auto"
     >
-      <Link
-        to="/stories/all"
-        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-4"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" /> Back to stories
-      </Link>
+      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+        <Link to="/dashboard" className="hover:text-foreground">
+          Home
+        </Link>
 
+        <span>&gt;</span>
+
+        <Link to="/stories/$storyId" params={{ storyId }} className="hover:text-foreground">
+          Stories
+        </Link>
+
+        <span>&gt;</span>
+
+        <span className="text-foreground font-medium"> Update Scrum Task </span>
+      </div>
       <form onSubmit={submit} className="space-y-5">
         <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
           <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-muted/20">
@@ -134,13 +172,15 @@ function CreateStoryPage() {
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             <div>
-              <div className="font-semibold leading-tight">Create story</div>
-              <div className="text-xs text-muted-foreground">A new work item in the backlog</div>
+              <div className="font-semibold leading-tight">Update Scrum Task</div>
+              <div className="text-xs text-muted-foreground">
+                Create a Scrum Task for this Story
+              </div>
             </div>
           </div>
 
           <div className="px-6 py-6 space-y-5">
-            <Field label="Story Title" required error={errors.title}>
+            <Field label="Title" required error={errors.title}>
               <input
                 value={title}
                 onChange={(e) => {
@@ -148,7 +188,7 @@ function CreateStoryPage() {
                   if (errors.title) setErrors({ ...errors, title: "" });
                 }}
                 maxLength={140}
-                placeholder="Enter Story Title"
+                placeholder="e.g. Implement OAuth2 login flow"
                 className={`w-full h-10 px-3 rounded-lg border bg-background text-sm outline-none focus:border-ring transition ${errors.title ? "border-[oklch(0.7_0.2_25)]" : "border-border"}`}
               />
             </Field>
@@ -161,7 +201,7 @@ function CreateStoryPage() {
                   options={PROJECTS.map((p) => ({ value: p.id, label: `${p.key} · ${p.name}` }))}
                 />
               </Field>
-              <Field label="Sprint">
+              <Field label="Sprint" required error={errors.sprintId}>
                 <FormSelect
                   value={sprintId}
                   onChange={setSprintId}
@@ -171,37 +211,21 @@ function CreateStoryPage() {
                   }))}
                 />
               </Field>
-
-              <Field label="Epic">
+              <Field label="Assigned team">
                 <FormSelect
-                  value={epicId}
-                  onChange={setEpicId}
-                  options={[
-                    { value: "", label: "Select Epic" },
-                    ...EPICS.map((e) => ({
-                      value: e.id,
-                      label: e.name,
-                    })),
-                  ]}
+                  value={team}
+                  onChange={setTeam}
+                  options={TEAMS.map((t) => ({ value: t, label: t }))}
                 />
               </Field>
 
-              <Field label="Assignee" error={errors.assigneeId}>
+              <Field label="Assigned to" required error={errors.assigneeId}>
                 <FormSelect
                   value={assigneeId}
                   onChange={setAssigneeId}
                   options={ASSIGNEES.map((u) => ({ value: u.id, label: `${u.name} · ${u.title}` }))}
                 />
               </Field>
-
-              <Field label="Reporter">
-                <input
-                  value={currentUser.name}
-                  readOnly
-                  className="w-full h-10 px-3 rounded-lg border border-border bg-muted/40 text-sm"
-                />
-              </Field>
-
               <Field label="Priority" required>
                 <FormSelect
                   value={priority}
@@ -210,34 +234,62 @@ function CreateStoryPage() {
                 />
               </Field>
 
-              <Field label="Business Value">
+              <Field label="Type" required>
                 <FormSelect
-                  value={businessValue}
-                  onChange={(v) => setBusinessValue(v as BusinessValue)}
-                  options={BUSINESS_VALUES.map((b) => ({
-                    value: b,
-                    label: b,
+                  value={type}
+                  onChange={(v) => setType(v)}
+                  options={TASK_TYPES.map((t) => ({
+                    value: t,
+                    label: t,
                   }))}
                 />
               </Field>
 
-              <Field label="Story points" required error={errors.storyPoints}>
+              <Field label="Original Estimate (Hours)" required>
                 <div className="relative">
-                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+
                   <input
                     type="number"
                     min={0}
-                    max={100}
-                    value={storyPoints}
-                    onChange={(e) =>
-                      setStoryPoints(Math.max(0, Math.min(100, Number(e.target.value) || 0)))
-                    }
-                    className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background text-sm outline-none focus:border-ring"
+                    value={originalEstimate}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      setOriginalEstimate(value);
+                      setRemainingHours(value);
+                    }}
+                    className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background"
                   />
                 </div>
               </Field>
 
-              <Field label="Due Date" error={errors.dueDate}>
+              <Field label="Remaining Hours" required>
+                <div className="relative">
+                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <input
+                    type="number"
+                    min={0}
+                    value={remainingHours}
+                    onChange={(e) => setRemainingHours(Number(e.target.value))}
+                    className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background"
+                  />
+                </div>
+              </Field>
+
+              <Field label="Actual Hours Spent">
+                <div className="relative">
+                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <input
+                    type="number"
+                    min={0}
+                    value={actualHoursSpent}
+                    onChange={(e) => setActualHoursSpent(Number(e.target.value))}
+                    className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background"
+                  />
+                </div>
+              </Field>
+
+              <Field label="Deadline" error={errors.dueDate}>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                   <input
@@ -248,7 +300,7 @@ function CreateStoryPage() {
                   />
                 </div>
               </Field>
-              <Field label="Status">
+              <Field label="Initial status">
                 <div className="h-10 px-3 rounded-lg border border-border bg-muted/40 text-sm flex items-center text-muted-foreground">
                   {status}{" "}
                   <span className="ml-2 text-[10px] uppercase tracking-wider">default</span>
@@ -256,7 +308,7 @@ function CreateStoryPage() {
               </Field>
             </div>
 
-            <Field label="Story Description" required error={errors.description}>
+            <Field label="Description" required error={errors.description}>
               <textarea
                 value={description}
                 onChange={(e) => {
@@ -280,7 +332,13 @@ function CreateStoryPage() {
                 value={acceptanceCriteria}
                 onChange={(e) => {
                   setAcceptanceCriteria(e.target.value);
-                  if (errors.acceptanceCriteria) setErrors({ ...errors, acceptanceCriteria: "" });
+
+                  if (errors.acceptanceCriteria) {
+                    setErrors({
+                      ...errors,
+                      acceptanceCriteria: "",
+                    });
+                  }
                 }}
                 rows={4}
                 maxLength={2000}
@@ -288,20 +346,12 @@ function CreateStoryPage() {
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm outline-none focus:border-ring transition resize-none font-mono"
               />
             </Field>
-
-            <Field label="Labels / Tags">
-              <input
-                value={labels}
-                onChange={(e) => setLabels(e.target.value)}
-                placeholder="bug, ui, backend"
-                className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none focus:border-ring"
-              />
-            </Field>
           </div>
 
           <div className="px-6 py-4 border-t border-border flex items-center justify-end gap-2 bg-muted/20">
             <Link
-              to="/stories/all"
+              to="/stories/$storyId"
+              params={{ storyId }}
               className="h-9 px-4 rounded-lg border border-border text-sm font-medium hover:bg-muted inline-flex items-center"
             >
               Cancel
@@ -313,11 +363,11 @@ function CreateStoryPage() {
             >
               {submitting ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Creating…
+                  <Loader2 className="h-4 w-4 animate-spin" /> Updating...
                 </>
               ) : (
                 <>
-                  <Plus className="h-4 w-4" /> Create Story
+                  <Plus className="h-4 w-4" /> Update Scrum Task
                 </>
               )}
             </button>

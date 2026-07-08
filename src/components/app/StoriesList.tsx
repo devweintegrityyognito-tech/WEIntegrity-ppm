@@ -1,7 +1,16 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "@tanstack/react-router";
-import { Search, Filter, ArrowUpDown, ChevronLeft, ChevronRight, X, Trash2 } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import {
+  Search,
+  Filter,
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Trash2,
+  Pencil,
+} from "lucide-react";
 import { Badge, priorityTone, statusTone } from "@/components/app/Badge";
 import {
   storiesStore,
@@ -52,6 +61,7 @@ export function StoriesList({
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
 
+  const navigate = useNavigate();
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
     let list = stories.filter((st) => {
@@ -352,19 +362,36 @@ export function StoriesList({
                         {s.storyPoints}
                       </td>
                       <td className="py-3 pr-3">
-                        <button
-                          onClick={() => {
-                            fetch(`https://weintegrity-ppm-main.onrender.com/api/stories/${s.id}`, {
-                              method: "DELETE",
-                            })
-                              .then(() => window.location.reload())
-                              .catch((err) => console.error(err));
-                          }}
-                          title="Delete"
-                          className="opacity-0 group-hover:opacity-100 transition h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
+                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition">
+                          {/* Edit */}
+                          <button
+                            onClick={() =>
+                              navigate({
+                                to: "/stories/edit/$storyId",
+                                params: { storyId: s.id },
+                              })
+                            }
+                            title="Edit"
+                            className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </button>
+
+                          {/* Delete */}
+                          <button
+                            onClick={() => {
+                              fetch(`https://weintegrity-ppm-main.onrender.com/api/stories/${s.id}`, {
+                                method: "DELETE",
+                              })
+                                .then(() => window.location.reload())
+                                .catch(console.error);
+                            }}
+                            title="Delete"
+                            className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </motion.tr>
                   ))}
