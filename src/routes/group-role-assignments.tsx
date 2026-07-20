@@ -1,11 +1,11 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { AppShell } from "@/components/app/AppShell";
 
-export const Route = createFileRoute("/team")({
-  component: TeamLayout,
+export const Route = createFileRoute("/group-role-assignments")({
+  component: GroupRoleAssignmentsLayout,
 });
 
-function TeamLayout() {
+function GroupRoleAssignmentsLayout() {
   return (
     <AppShell>
       <Outlet />

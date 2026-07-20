@@ -27,7 +27,7 @@ function Employees() {
 
       <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
         <div className="px-4 py-3 border-b border-border flex items-center gap-2 flex-wrap">
-          <div className="relative flex-1 min-w-[240px]">
+          <div className="relative flex-1 min-w-60">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               placeholder="Search by name, team, role…"

@@ -9,37 +9,76 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsersRouteImport } from './routes/users'
+import { Route as UserGroupMembershipsRouteImport } from './routes/user-group-memberships'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as StoriesRouteImport } from './routes/stories'
 import { Route as SprintsRouteImport } from './routes/sprints'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as RolesRouteImport } from './routes/roles'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as RecruitmentRouteImport } from './routes/recruitment'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PluginsRouteImport } from './routes/plugins'
+import { Route as PermissionsRouteImport } from './routes/permissions'
 import { Route as PayrollRouteImport } from './routes/payroll'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LeaveRouteImport } from './routes/leave'
 import { Route as HrRouteImport } from './routes/hr'
+import { Route as GroupRoleAssignmentsRouteImport } from './routes/group-role-assignments'
 import { Route as EmployeesRouteImport } from './routes/employees'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BoardRouteImport } from './routes/board'
 import { Route as AttendanceRouteImport } from './routes/attendance'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UsersIndexRouteImport } from './routes/users.index'
+import { Route as UserGroupMembershipsIndexRouteImport } from './routes/user-group-memberships.index'
+import { Route as TeamIndexRouteImport } from './routes/team.index'
 import { Route as StoriesIndexRouteImport } from './routes/stories.index'
+import { Route as RolesIndexRouteImport } from './routes/roles.index'
+import { Route as PermissionsIndexRouteImport } from './routes/permissions.index'
+import { Route as GroupRoleAssignmentsIndexRouteImport } from './routes/group-role-assignments.index'
+import { Route as UsersCreateRouteImport } from './routes/users.create'
+import { Route as UsersUserIdRouteImport } from './routes/users.$userId'
+import { Route as UserGroupMembershipsCreateRouteImport } from './routes/user-group-memberships.create'
+import { Route as UserGroupMembershipsMembershipIdRouteImport } from './routes/user-group-memberships.$membershipId'
+import { Route as TeamCreateRouteImport } from './routes/team.create'
+import { Route as TeamTeamIdRouteImport } from './routes/team.$teamId'
 import { Route as TasksCreateRouteImport } from './routes/tasks.create'
 import { Route as TasksTaskIdRouteImport } from './routes/tasks.$taskId'
 import { Route as StoriesMyRouteImport } from './routes/stories.my'
 import { Route as StoriesCreateRouteImport } from './routes/stories.create'
 import { Route as StoriesAllRouteImport } from './routes/stories.all'
 import { Route as StoriesStoryIdRouteImport } from './routes/stories.$storyId'
+import { Route as RolesCreateRouteImport } from './routes/roles.create'
+import { Route as RolesRoleIdRouteImport } from './routes/roles.$roleId'
+import { Route as PermissionsCreateRouteImport } from './routes/permissions.create'
+import { Route as PermissionsPermissionIdRouteImport } from './routes/permissions.$permissionId'
+import { Route as GroupRoleAssignmentsCreateRouteImport } from './routes/group-role-assignments.create'
+import { Route as GroupRoleAssignmentsAssignmentIdRouteImport } from './routes/group-role-assignments.$assignmentId'
 import { Route as DefectsCreateRouteImport } from './routes/defects.create'
 import { Route as DefectsDefectIdRouteImport } from './routes/defects.$defectId'
+import { Route as UsersEditUserIdRouteImport } from './routes/users.edit.$userId'
+import { Route as UserGroupMembershipsEditMembershipIdRouteImport } from './routes/user-group-memberships.edit.$membershipId'
+import { Route as TeamEditTeamIdRouteImport } from './routes/team.edit.$teamId'
 import { Route as TasksEditTaskIdRouteImport } from './routes/tasks.edit.$taskId'
 import { Route as StoriesEditStoryIdRouteImport } from './routes/stories.edit.$storyId'
+import { Route as RolesEditRoleIdRouteImport } from './routes/roles.edit.$roleId'
+import { Route as PermissionsEditPermissionIdRouteImport } from './routes/permissions.edit.$permissionId'
+import { Route as GroupRoleAssignmentsEditAssignmentIdRouteImport } from './routes/group-role-assignments.edit.$assignmentId'
 import { Route as DefectsEditDefectIdRouteImport } from './routes/defects.edit.$defectId'
 
+const UsersRoute = UsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserGroupMembershipsRoute = UserGroupMembershipsRouteImport.update({
+  id: '/user-group-memberships',
+  path: '/user-group-memberships',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
@@ -60,6 +99,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RolesRoute = RolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReportsRoute = ReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -78,6 +122,11 @@ const ProjectsRoute = ProjectsRouteImport.update({
 const PluginsRoute = PluginsRouteImport.update({
   id: '/plugins',
   path: '/plugins',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PermissionsRoute = PermissionsRouteImport.update({
+  id: '/permissions',
+  path: '/permissions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PayrollRoute = PayrollRouteImport.update({
@@ -105,6 +154,11 @@ const HrRoute = HrRouteImport.update({
   path: '/hr',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GroupRoleAssignmentsRoute = GroupRoleAssignmentsRouteImport.update({
+  id: '/group-role-assignments',
+  path: '/group-role-assignments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmployeesRoute = EmployeesRouteImport.update({
   id: '/employees',
   path: '/employees',
@@ -130,10 +184,74 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UsersIndexRoute = UsersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UsersRoute,
+} as any)
+const UserGroupMembershipsIndexRoute =
+  UserGroupMembershipsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => UserGroupMembershipsRoute,
+  } as any)
+const TeamIndexRoute = TeamIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TeamRoute,
+} as any)
 const StoriesIndexRoute = StoriesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => StoriesRoute,
+} as any)
+const RolesIndexRoute = RolesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RolesRoute,
+} as any)
+const PermissionsIndexRoute = PermissionsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PermissionsRoute,
+} as any)
+const GroupRoleAssignmentsIndexRoute =
+  GroupRoleAssignmentsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => GroupRoleAssignmentsRoute,
+  } as any)
+const UsersCreateRoute = UsersCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => UsersRoute,
+} as any)
+const UsersUserIdRoute = UsersUserIdRouteImport.update({
+  id: '/$userId',
+  path: '/$userId',
+  getParentRoute: () => UsersRoute,
+} as any)
+const UserGroupMembershipsCreateRoute =
+  UserGroupMembershipsCreateRouteImport.update({
+    id: '/create',
+    path: '/create',
+    getParentRoute: () => UserGroupMembershipsRoute,
+  } as any)
+const UserGroupMembershipsMembershipIdRoute =
+  UserGroupMembershipsMembershipIdRouteImport.update({
+    id: '/$membershipId',
+    path: '/$membershipId',
+    getParentRoute: () => UserGroupMembershipsRoute,
+  } as any)
+const TeamCreateRoute = TeamCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => TeamRoute,
+} as any)
+const TeamTeamIdRoute = TeamTeamIdRouteImport.update({
+  id: '/$teamId',
+  path: '/$teamId',
+  getParentRoute: () => TeamRoute,
 } as any)
 const TasksCreateRoute = TasksCreateRouteImport.update({
   id: '/tasks/create',
@@ -165,6 +283,38 @@ const StoriesStoryIdRoute = StoriesStoryIdRouteImport.update({
   path: '/$storyId',
   getParentRoute: () => StoriesRoute,
 } as any)
+const RolesCreateRoute = RolesCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => RolesRoute,
+} as any)
+const RolesRoleIdRoute = RolesRoleIdRouteImport.update({
+  id: '/$roleId',
+  path: '/$roleId',
+  getParentRoute: () => RolesRoute,
+} as any)
+const PermissionsCreateRoute = PermissionsCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => PermissionsRoute,
+} as any)
+const PermissionsPermissionIdRoute = PermissionsPermissionIdRouteImport.update({
+  id: '/$permissionId',
+  path: '/$permissionId',
+  getParentRoute: () => PermissionsRoute,
+} as any)
+const GroupRoleAssignmentsCreateRoute =
+  GroupRoleAssignmentsCreateRouteImport.update({
+    id: '/create',
+    path: '/create',
+    getParentRoute: () => GroupRoleAssignmentsRoute,
+  } as any)
+const GroupRoleAssignmentsAssignmentIdRoute =
+  GroupRoleAssignmentsAssignmentIdRouteImport.update({
+    id: '/$assignmentId',
+    path: '/$assignmentId',
+    getParentRoute: () => GroupRoleAssignmentsRoute,
+  } as any)
 const DefectsCreateRoute = DefectsCreateRouteImport.update({
   id: '/defects/create',
   path: '/defects/create',
@@ -174,6 +324,22 @@ const DefectsDefectIdRoute = DefectsDefectIdRouteImport.update({
   id: '/defects/$defectId',
   path: '/defects/$defectId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const UsersEditUserIdRoute = UsersEditUserIdRouteImport.update({
+  id: '/edit/$userId',
+  path: '/edit/$userId',
+  getParentRoute: () => UsersRoute,
+} as any)
+const UserGroupMembershipsEditMembershipIdRoute =
+  UserGroupMembershipsEditMembershipIdRouteImport.update({
+    id: '/edit/$membershipId',
+    path: '/edit/$membershipId',
+    getParentRoute: () => UserGroupMembershipsRoute,
+  } as any)
+const TeamEditTeamIdRoute = TeamEditTeamIdRouteImport.update({
+  id: '/edit/$teamId',
+  path: '/edit/$teamId',
+  getParentRoute: () => TeamRoute,
 } as any)
 const TasksEditTaskIdRoute = TasksEditTaskIdRouteImport.update({
   id: '/tasks/edit/$taskId',
@@ -185,6 +351,23 @@ const StoriesEditStoryIdRoute = StoriesEditStoryIdRouteImport.update({
   path: '/edit/$storyId',
   getParentRoute: () => StoriesRoute,
 } as any)
+const RolesEditRoleIdRoute = RolesEditRoleIdRouteImport.update({
+  id: '/edit/$roleId',
+  path: '/edit/$roleId',
+  getParentRoute: () => RolesRoute,
+} as any)
+const PermissionsEditPermissionIdRoute =
+  PermissionsEditPermissionIdRouteImport.update({
+    id: '/edit/$permissionId',
+    path: '/edit/$permissionId',
+    getParentRoute: () => PermissionsRoute,
+  } as any)
+const GroupRoleAssignmentsEditAssignmentIdRoute =
+  GroupRoleAssignmentsEditAssignmentIdRouteImport.update({
+    id: '/edit/$assignmentId',
+    path: '/edit/$assignmentId',
+    getParentRoute: () => GroupRoleAssignmentsRoute,
+  } as any)
 const DefectsEditDefectIdRoute = DefectsEditDefectIdRouteImport.update({
   id: '/defects/edit/$defectId',
   path: '/defects/edit/$defectId',
@@ -197,31 +380,60 @@ export interface FileRoutesByFullPath {
   '/board': typeof BoardRoute
   '/dashboard': typeof DashboardRoute
   '/employees': typeof EmployeesRoute
+  '/group-role-assignments': typeof GroupRoleAssignmentsRouteWithChildren
   '/hr': typeof HrRoute
   '/leave': typeof LeaveRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/payroll': typeof PayrollRoute
+  '/permissions': typeof PermissionsRouteWithChildren
   '/plugins': typeof PluginsRoute
   '/projects': typeof ProjectsRoute
   '/recruitment': typeof RecruitmentRoute
   '/reports': typeof ReportsRoute
+  '/roles': typeof RolesRouteWithChildren
   '/settings': typeof SettingsRoute
   '/sprints': typeof SprintsRoute
   '/stories': typeof StoriesRouteWithChildren
-  '/team': typeof TeamRoute
+  '/team': typeof TeamRouteWithChildren
+  '/user-group-memberships': typeof UserGroupMembershipsRouteWithChildren
+  '/users': typeof UsersRouteWithChildren
   '/defects/$defectId': typeof DefectsDefectIdRoute
   '/defects/create': typeof DefectsCreateRoute
+  '/group-role-assignments/$assignmentId': typeof GroupRoleAssignmentsAssignmentIdRoute
+  '/group-role-assignments/create': typeof GroupRoleAssignmentsCreateRoute
+  '/permissions/$permissionId': typeof PermissionsPermissionIdRoute
+  '/permissions/create': typeof PermissionsCreateRoute
+  '/roles/$roleId': typeof RolesRoleIdRoute
+  '/roles/create': typeof RolesCreateRoute
   '/stories/$storyId': typeof StoriesStoryIdRoute
   '/stories/all': typeof StoriesAllRoute
   '/stories/create': typeof StoriesCreateRoute
   '/stories/my': typeof StoriesMyRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
   '/tasks/create': typeof TasksCreateRoute
+  '/team/$teamId': typeof TeamTeamIdRoute
+  '/team/create': typeof TeamCreateRoute
+  '/user-group-memberships/$membershipId': typeof UserGroupMembershipsMembershipIdRoute
+  '/user-group-memberships/create': typeof UserGroupMembershipsCreateRoute
+  '/users/$userId': typeof UsersUserIdRoute
+  '/users/create': typeof UsersCreateRoute
+  '/group-role-assignments/': typeof GroupRoleAssignmentsIndexRoute
+  '/permissions/': typeof PermissionsIndexRoute
+  '/roles/': typeof RolesIndexRoute
   '/stories/': typeof StoriesIndexRoute
+  '/team/': typeof TeamIndexRoute
+  '/user-group-memberships/': typeof UserGroupMembershipsIndexRoute
+  '/users/': typeof UsersIndexRoute
   '/defects/edit/$defectId': typeof DefectsEditDefectIdRoute
+  '/group-role-assignments/edit/$assignmentId': typeof GroupRoleAssignmentsEditAssignmentIdRoute
+  '/permissions/edit/$permissionId': typeof PermissionsEditPermissionIdRoute
+  '/roles/edit/$roleId': typeof RolesEditRoleIdRoute
   '/stories/edit/$storyId': typeof StoriesEditStoryIdRoute
   '/tasks/edit/$taskId': typeof TasksEditTaskIdRoute
+  '/team/edit/$teamId': typeof TeamEditTeamIdRoute
+  '/user-group-memberships/edit/$membershipId': typeof UserGroupMembershipsEditMembershipIdRoute
+  '/users/edit/$userId': typeof UsersEditUserIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -240,19 +452,42 @@ export interface FileRoutesByTo {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/sprints': typeof SprintsRoute
-  '/team': typeof TeamRoute
   '/defects/$defectId': typeof DefectsDefectIdRoute
   '/defects/create': typeof DefectsCreateRoute
+  '/group-role-assignments/$assignmentId': typeof GroupRoleAssignmentsAssignmentIdRoute
+  '/group-role-assignments/create': typeof GroupRoleAssignmentsCreateRoute
+  '/permissions/$permissionId': typeof PermissionsPermissionIdRoute
+  '/permissions/create': typeof PermissionsCreateRoute
+  '/roles/$roleId': typeof RolesRoleIdRoute
+  '/roles/create': typeof RolesCreateRoute
   '/stories/$storyId': typeof StoriesStoryIdRoute
   '/stories/all': typeof StoriesAllRoute
   '/stories/create': typeof StoriesCreateRoute
   '/stories/my': typeof StoriesMyRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
   '/tasks/create': typeof TasksCreateRoute
+  '/team/$teamId': typeof TeamTeamIdRoute
+  '/team/create': typeof TeamCreateRoute
+  '/user-group-memberships/$membershipId': typeof UserGroupMembershipsMembershipIdRoute
+  '/user-group-memberships/create': typeof UserGroupMembershipsCreateRoute
+  '/users/$userId': typeof UsersUserIdRoute
+  '/users/create': typeof UsersCreateRoute
+  '/group-role-assignments': typeof GroupRoleAssignmentsIndexRoute
+  '/permissions': typeof PermissionsIndexRoute
+  '/roles': typeof RolesIndexRoute
   '/stories': typeof StoriesIndexRoute
+  '/team': typeof TeamIndexRoute
+  '/user-group-memberships': typeof UserGroupMembershipsIndexRoute
+  '/users': typeof UsersIndexRoute
   '/defects/edit/$defectId': typeof DefectsEditDefectIdRoute
+  '/group-role-assignments/edit/$assignmentId': typeof GroupRoleAssignmentsEditAssignmentIdRoute
+  '/permissions/edit/$permissionId': typeof PermissionsEditPermissionIdRoute
+  '/roles/edit/$roleId': typeof RolesEditRoleIdRoute
   '/stories/edit/$storyId': typeof StoriesEditStoryIdRoute
   '/tasks/edit/$taskId': typeof TasksEditTaskIdRoute
+  '/team/edit/$teamId': typeof TeamEditTeamIdRoute
+  '/user-group-memberships/edit/$membershipId': typeof UserGroupMembershipsEditMembershipIdRoute
+  '/users/edit/$userId': typeof UsersEditUserIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -261,31 +496,60 @@ export interface FileRoutesById {
   '/board': typeof BoardRoute
   '/dashboard': typeof DashboardRoute
   '/employees': typeof EmployeesRoute
+  '/group-role-assignments': typeof GroupRoleAssignmentsRouteWithChildren
   '/hr': typeof HrRoute
   '/leave': typeof LeaveRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/payroll': typeof PayrollRoute
+  '/permissions': typeof PermissionsRouteWithChildren
   '/plugins': typeof PluginsRoute
   '/projects': typeof ProjectsRoute
   '/recruitment': typeof RecruitmentRoute
   '/reports': typeof ReportsRoute
+  '/roles': typeof RolesRouteWithChildren
   '/settings': typeof SettingsRoute
   '/sprints': typeof SprintsRoute
   '/stories': typeof StoriesRouteWithChildren
-  '/team': typeof TeamRoute
+  '/team': typeof TeamRouteWithChildren
+  '/user-group-memberships': typeof UserGroupMembershipsRouteWithChildren
+  '/users': typeof UsersRouteWithChildren
   '/defects/$defectId': typeof DefectsDefectIdRoute
   '/defects/create': typeof DefectsCreateRoute
+  '/group-role-assignments/$assignmentId': typeof GroupRoleAssignmentsAssignmentIdRoute
+  '/group-role-assignments/create': typeof GroupRoleAssignmentsCreateRoute
+  '/permissions/$permissionId': typeof PermissionsPermissionIdRoute
+  '/permissions/create': typeof PermissionsCreateRoute
+  '/roles/$roleId': typeof RolesRoleIdRoute
+  '/roles/create': typeof RolesCreateRoute
   '/stories/$storyId': typeof StoriesStoryIdRoute
   '/stories/all': typeof StoriesAllRoute
   '/stories/create': typeof StoriesCreateRoute
   '/stories/my': typeof StoriesMyRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
   '/tasks/create': typeof TasksCreateRoute
+  '/team/$teamId': typeof TeamTeamIdRoute
+  '/team/create': typeof TeamCreateRoute
+  '/user-group-memberships/$membershipId': typeof UserGroupMembershipsMembershipIdRoute
+  '/user-group-memberships/create': typeof UserGroupMembershipsCreateRoute
+  '/users/$userId': typeof UsersUserIdRoute
+  '/users/create': typeof UsersCreateRoute
+  '/group-role-assignments/': typeof GroupRoleAssignmentsIndexRoute
+  '/permissions/': typeof PermissionsIndexRoute
+  '/roles/': typeof RolesIndexRoute
   '/stories/': typeof StoriesIndexRoute
+  '/team/': typeof TeamIndexRoute
+  '/user-group-memberships/': typeof UserGroupMembershipsIndexRoute
+  '/users/': typeof UsersIndexRoute
   '/defects/edit/$defectId': typeof DefectsEditDefectIdRoute
+  '/group-role-assignments/edit/$assignmentId': typeof GroupRoleAssignmentsEditAssignmentIdRoute
+  '/permissions/edit/$permissionId': typeof PermissionsEditPermissionIdRoute
+  '/roles/edit/$roleId': typeof RolesEditRoleIdRoute
   '/stories/edit/$storyId': typeof StoriesEditStoryIdRoute
   '/tasks/edit/$taskId': typeof TasksEditTaskIdRoute
+  '/team/edit/$teamId': typeof TeamEditTeamIdRoute
+  '/user-group-memberships/edit/$membershipId': typeof UserGroupMembershipsEditMembershipIdRoute
+  '/users/edit/$userId': typeof UsersEditUserIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -295,31 +559,60 @@ export interface FileRouteTypes {
     | '/board'
     | '/dashboard'
     | '/employees'
+    | '/group-role-assignments'
     | '/hr'
     | '/leave'
     | '/login'
     | '/notifications'
     | '/payroll'
+    | '/permissions'
     | '/plugins'
     | '/projects'
     | '/recruitment'
     | '/reports'
+    | '/roles'
     | '/settings'
     | '/sprints'
     | '/stories'
     | '/team'
+    | '/user-group-memberships'
+    | '/users'
     | '/defects/$defectId'
     | '/defects/create'
+    | '/group-role-assignments/$assignmentId'
+    | '/group-role-assignments/create'
+    | '/permissions/$permissionId'
+    | '/permissions/create'
+    | '/roles/$roleId'
+    | '/roles/create'
     | '/stories/$storyId'
     | '/stories/all'
     | '/stories/create'
     | '/stories/my'
     | '/tasks/$taskId'
     | '/tasks/create'
+    | '/team/$teamId'
+    | '/team/create'
+    | '/user-group-memberships/$membershipId'
+    | '/user-group-memberships/create'
+    | '/users/$userId'
+    | '/users/create'
+    | '/group-role-assignments/'
+    | '/permissions/'
+    | '/roles/'
     | '/stories/'
+    | '/team/'
+    | '/user-group-memberships/'
+    | '/users/'
     | '/defects/edit/$defectId'
+    | '/group-role-assignments/edit/$assignmentId'
+    | '/permissions/edit/$permissionId'
+    | '/roles/edit/$roleId'
     | '/stories/edit/$storyId'
     | '/tasks/edit/$taskId'
+    | '/team/edit/$teamId'
+    | '/user-group-memberships/edit/$membershipId'
+    | '/users/edit/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -338,19 +631,42 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/sprints'
-    | '/team'
     | '/defects/$defectId'
     | '/defects/create'
+    | '/group-role-assignments/$assignmentId'
+    | '/group-role-assignments/create'
+    | '/permissions/$permissionId'
+    | '/permissions/create'
+    | '/roles/$roleId'
+    | '/roles/create'
     | '/stories/$storyId'
     | '/stories/all'
     | '/stories/create'
     | '/stories/my'
     | '/tasks/$taskId'
     | '/tasks/create'
+    | '/team/$teamId'
+    | '/team/create'
+    | '/user-group-memberships/$membershipId'
+    | '/user-group-memberships/create'
+    | '/users/$userId'
+    | '/users/create'
+    | '/group-role-assignments'
+    | '/permissions'
+    | '/roles'
     | '/stories'
+    | '/team'
+    | '/user-group-memberships'
+    | '/users'
     | '/defects/edit/$defectId'
+    | '/group-role-assignments/edit/$assignmentId'
+    | '/permissions/edit/$permissionId'
+    | '/roles/edit/$roleId'
     | '/stories/edit/$storyId'
     | '/tasks/edit/$taskId'
+    | '/team/edit/$teamId'
+    | '/user-group-memberships/edit/$membershipId'
+    | '/users/edit/$userId'
   id:
     | '__root__'
     | '/'
@@ -358,31 +674,60 @@ export interface FileRouteTypes {
     | '/board'
     | '/dashboard'
     | '/employees'
+    | '/group-role-assignments'
     | '/hr'
     | '/leave'
     | '/login'
     | '/notifications'
     | '/payroll'
+    | '/permissions'
     | '/plugins'
     | '/projects'
     | '/recruitment'
     | '/reports'
+    | '/roles'
     | '/settings'
     | '/sprints'
     | '/stories'
     | '/team'
+    | '/user-group-memberships'
+    | '/users'
     | '/defects/$defectId'
     | '/defects/create'
+    | '/group-role-assignments/$assignmentId'
+    | '/group-role-assignments/create'
+    | '/permissions/$permissionId'
+    | '/permissions/create'
+    | '/roles/$roleId'
+    | '/roles/create'
     | '/stories/$storyId'
     | '/stories/all'
     | '/stories/create'
     | '/stories/my'
     | '/tasks/$taskId'
     | '/tasks/create'
+    | '/team/$teamId'
+    | '/team/create'
+    | '/user-group-memberships/$membershipId'
+    | '/user-group-memberships/create'
+    | '/users/$userId'
+    | '/users/create'
+    | '/group-role-assignments/'
+    | '/permissions/'
+    | '/roles/'
     | '/stories/'
+    | '/team/'
+    | '/user-group-memberships/'
+    | '/users/'
     | '/defects/edit/$defectId'
+    | '/group-role-assignments/edit/$assignmentId'
+    | '/permissions/edit/$permissionId'
+    | '/roles/edit/$roleId'
     | '/stories/edit/$storyId'
     | '/tasks/edit/$taskId'
+    | '/team/edit/$teamId'
+    | '/user-group-memberships/edit/$membershipId'
+    | '/users/edit/$userId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -391,19 +736,24 @@ export interface RootRouteChildren {
   BoardRoute: typeof BoardRoute
   DashboardRoute: typeof DashboardRoute
   EmployeesRoute: typeof EmployeesRoute
+  GroupRoleAssignmentsRoute: typeof GroupRoleAssignmentsRouteWithChildren
   HrRoute: typeof HrRoute
   LeaveRoute: typeof LeaveRoute
   LoginRoute: typeof LoginRoute
   NotificationsRoute: typeof NotificationsRoute
   PayrollRoute: typeof PayrollRoute
+  PermissionsRoute: typeof PermissionsRouteWithChildren
   PluginsRoute: typeof PluginsRoute
   ProjectsRoute: typeof ProjectsRoute
   RecruitmentRoute: typeof RecruitmentRoute
   ReportsRoute: typeof ReportsRoute
+  RolesRoute: typeof RolesRouteWithChildren
   SettingsRoute: typeof SettingsRoute
   SprintsRoute: typeof SprintsRoute
   StoriesRoute: typeof StoriesRouteWithChildren
-  TeamRoute: typeof TeamRoute
+  TeamRoute: typeof TeamRouteWithChildren
+  UserGroupMembershipsRoute: typeof UserGroupMembershipsRouteWithChildren
+  UsersRoute: typeof UsersRouteWithChildren
   DefectsDefectIdRoute: typeof DefectsDefectIdRoute
   DefectsCreateRoute: typeof DefectsCreateRoute
   TasksTaskIdRoute: typeof TasksTaskIdRoute
@@ -414,6 +764,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/users': {
+      id: '/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof UsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user-group-memberships': {
+      id: '/user-group-memberships'
+      path: '/user-group-memberships'
+      fullPath: '/user-group-memberships'
+      preLoaderRoute: typeof UserGroupMembershipsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/team': {
       id: '/team'
       path: '/team'
@@ -442,6 +806,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/roles': {
+      id: '/roles'
+      path: '/roles'
+      fullPath: '/roles'
+      preLoaderRoute: typeof RolesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reports': {
       id: '/reports'
       path: '/reports'
@@ -468,6 +839,13 @@ declare module '@tanstack/react-router' {
       path: '/plugins'
       fullPath: '/plugins'
       preLoaderRoute: typeof PluginsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/permissions': {
+      id: '/permissions'
+      path: '/permissions'
+      fullPath: '/permissions'
+      preLoaderRoute: typeof PermissionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/payroll': {
@@ -505,6 +883,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HrRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/group-role-assignments': {
+      id: '/group-role-assignments'
+      path: '/group-role-assignments'
+      fullPath: '/group-role-assignments'
+      preLoaderRoute: typeof GroupRoleAssignmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/employees': {
       id: '/employees'
       path: '/employees'
@@ -540,12 +925,96 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/users/': {
+      id: '/users/'
+      path: '/'
+      fullPath: '/users/'
+      preLoaderRoute: typeof UsersIndexRouteImport
+      parentRoute: typeof UsersRoute
+    }
+    '/user-group-memberships/': {
+      id: '/user-group-memberships/'
+      path: '/'
+      fullPath: '/user-group-memberships/'
+      preLoaderRoute: typeof UserGroupMembershipsIndexRouteImport
+      parentRoute: typeof UserGroupMembershipsRoute
+    }
+    '/team/': {
+      id: '/team/'
+      path: '/'
+      fullPath: '/team/'
+      preLoaderRoute: typeof TeamIndexRouteImport
+      parentRoute: typeof TeamRoute
+    }
     '/stories/': {
       id: '/stories/'
       path: '/'
       fullPath: '/stories/'
       preLoaderRoute: typeof StoriesIndexRouteImport
       parentRoute: typeof StoriesRoute
+    }
+    '/roles/': {
+      id: '/roles/'
+      path: '/'
+      fullPath: '/roles/'
+      preLoaderRoute: typeof RolesIndexRouteImport
+      parentRoute: typeof RolesRoute
+    }
+    '/permissions/': {
+      id: '/permissions/'
+      path: '/'
+      fullPath: '/permissions/'
+      preLoaderRoute: typeof PermissionsIndexRouteImport
+      parentRoute: typeof PermissionsRoute
+    }
+    '/group-role-assignments/': {
+      id: '/group-role-assignments/'
+      path: '/'
+      fullPath: '/group-role-assignments/'
+      preLoaderRoute: typeof GroupRoleAssignmentsIndexRouteImport
+      parentRoute: typeof GroupRoleAssignmentsRoute
+    }
+    '/users/create': {
+      id: '/users/create'
+      path: '/create'
+      fullPath: '/users/create'
+      preLoaderRoute: typeof UsersCreateRouteImport
+      parentRoute: typeof UsersRoute
+    }
+    '/users/$userId': {
+      id: '/users/$userId'
+      path: '/$userId'
+      fullPath: '/users/$userId'
+      preLoaderRoute: typeof UsersUserIdRouteImport
+      parentRoute: typeof UsersRoute
+    }
+    '/user-group-memberships/create': {
+      id: '/user-group-memberships/create'
+      path: '/create'
+      fullPath: '/user-group-memberships/create'
+      preLoaderRoute: typeof UserGroupMembershipsCreateRouteImport
+      parentRoute: typeof UserGroupMembershipsRoute
+    }
+    '/user-group-memberships/$membershipId': {
+      id: '/user-group-memberships/$membershipId'
+      path: '/$membershipId'
+      fullPath: '/user-group-memberships/$membershipId'
+      preLoaderRoute: typeof UserGroupMembershipsMembershipIdRouteImport
+      parentRoute: typeof UserGroupMembershipsRoute
+    }
+    '/team/create': {
+      id: '/team/create'
+      path: '/create'
+      fullPath: '/team/create'
+      preLoaderRoute: typeof TeamCreateRouteImport
+      parentRoute: typeof TeamRoute
+    }
+    '/team/$teamId': {
+      id: '/team/$teamId'
+      path: '/$teamId'
+      fullPath: '/team/$teamId'
+      preLoaderRoute: typeof TeamTeamIdRouteImport
+      parentRoute: typeof TeamRoute
     }
     '/tasks/create': {
       id: '/tasks/create'
@@ -589,6 +1058,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoriesStoryIdRouteImport
       parentRoute: typeof StoriesRoute
     }
+    '/roles/create': {
+      id: '/roles/create'
+      path: '/create'
+      fullPath: '/roles/create'
+      preLoaderRoute: typeof RolesCreateRouteImport
+      parentRoute: typeof RolesRoute
+    }
+    '/roles/$roleId': {
+      id: '/roles/$roleId'
+      path: '/$roleId'
+      fullPath: '/roles/$roleId'
+      preLoaderRoute: typeof RolesRoleIdRouteImport
+      parentRoute: typeof RolesRoute
+    }
+    '/permissions/create': {
+      id: '/permissions/create'
+      path: '/create'
+      fullPath: '/permissions/create'
+      preLoaderRoute: typeof PermissionsCreateRouteImport
+      parentRoute: typeof PermissionsRoute
+    }
+    '/permissions/$permissionId': {
+      id: '/permissions/$permissionId'
+      path: '/$permissionId'
+      fullPath: '/permissions/$permissionId'
+      preLoaderRoute: typeof PermissionsPermissionIdRouteImport
+      parentRoute: typeof PermissionsRoute
+    }
+    '/group-role-assignments/create': {
+      id: '/group-role-assignments/create'
+      path: '/create'
+      fullPath: '/group-role-assignments/create'
+      preLoaderRoute: typeof GroupRoleAssignmentsCreateRouteImport
+      parentRoute: typeof GroupRoleAssignmentsRoute
+    }
+    '/group-role-assignments/$assignmentId': {
+      id: '/group-role-assignments/$assignmentId'
+      path: '/$assignmentId'
+      fullPath: '/group-role-assignments/$assignmentId'
+      preLoaderRoute: typeof GroupRoleAssignmentsAssignmentIdRouteImport
+      parentRoute: typeof GroupRoleAssignmentsRoute
+    }
     '/defects/create': {
       id: '/defects/create'
       path: '/defects/create'
@@ -602,6 +1113,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/defects/$defectId'
       preLoaderRoute: typeof DefectsDefectIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/users/edit/$userId': {
+      id: '/users/edit/$userId'
+      path: '/edit/$userId'
+      fullPath: '/users/edit/$userId'
+      preLoaderRoute: typeof UsersEditUserIdRouteImport
+      parentRoute: typeof UsersRoute
+    }
+    '/user-group-memberships/edit/$membershipId': {
+      id: '/user-group-memberships/edit/$membershipId'
+      path: '/edit/$membershipId'
+      fullPath: '/user-group-memberships/edit/$membershipId'
+      preLoaderRoute: typeof UserGroupMembershipsEditMembershipIdRouteImport
+      parentRoute: typeof UserGroupMembershipsRoute
+    }
+    '/team/edit/$teamId': {
+      id: '/team/edit/$teamId'
+      path: '/edit/$teamId'
+      fullPath: '/team/edit/$teamId'
+      preLoaderRoute: typeof TeamEditTeamIdRouteImport
+      parentRoute: typeof TeamRoute
     }
     '/tasks/edit/$taskId': {
       id: '/tasks/edit/$taskId'
@@ -617,6 +1149,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoriesEditStoryIdRouteImport
       parentRoute: typeof StoriesRoute
     }
+    '/roles/edit/$roleId': {
+      id: '/roles/edit/$roleId'
+      path: '/edit/$roleId'
+      fullPath: '/roles/edit/$roleId'
+      preLoaderRoute: typeof RolesEditRoleIdRouteImport
+      parentRoute: typeof RolesRoute
+    }
+    '/permissions/edit/$permissionId': {
+      id: '/permissions/edit/$permissionId'
+      path: '/edit/$permissionId'
+      fullPath: '/permissions/edit/$permissionId'
+      preLoaderRoute: typeof PermissionsEditPermissionIdRouteImport
+      parentRoute: typeof PermissionsRoute
+    }
+    '/group-role-assignments/edit/$assignmentId': {
+      id: '/group-role-assignments/edit/$assignmentId'
+      path: '/edit/$assignmentId'
+      fullPath: '/group-role-assignments/edit/$assignmentId'
+      preLoaderRoute: typeof GroupRoleAssignmentsEditAssignmentIdRouteImport
+      parentRoute: typeof GroupRoleAssignmentsRoute
+    }
     '/defects/edit/$defectId': {
       id: '/defects/edit/$defectId'
       path: '/defects/edit/$defectId'
@@ -626,6 +1179,58 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface GroupRoleAssignmentsRouteChildren {
+  GroupRoleAssignmentsAssignmentIdRoute: typeof GroupRoleAssignmentsAssignmentIdRoute
+  GroupRoleAssignmentsCreateRoute: typeof GroupRoleAssignmentsCreateRoute
+  GroupRoleAssignmentsIndexRoute: typeof GroupRoleAssignmentsIndexRoute
+  GroupRoleAssignmentsEditAssignmentIdRoute: typeof GroupRoleAssignmentsEditAssignmentIdRoute
+}
+
+const GroupRoleAssignmentsRouteChildren: GroupRoleAssignmentsRouteChildren = {
+  GroupRoleAssignmentsAssignmentIdRoute: GroupRoleAssignmentsAssignmentIdRoute,
+  GroupRoleAssignmentsCreateRoute: GroupRoleAssignmentsCreateRoute,
+  GroupRoleAssignmentsIndexRoute: GroupRoleAssignmentsIndexRoute,
+  GroupRoleAssignmentsEditAssignmentIdRoute:
+    GroupRoleAssignmentsEditAssignmentIdRoute,
+}
+
+const GroupRoleAssignmentsRouteWithChildren =
+  GroupRoleAssignmentsRoute._addFileChildren(GroupRoleAssignmentsRouteChildren)
+
+interface PermissionsRouteChildren {
+  PermissionsPermissionIdRoute: typeof PermissionsPermissionIdRoute
+  PermissionsCreateRoute: typeof PermissionsCreateRoute
+  PermissionsIndexRoute: typeof PermissionsIndexRoute
+  PermissionsEditPermissionIdRoute: typeof PermissionsEditPermissionIdRoute
+}
+
+const PermissionsRouteChildren: PermissionsRouteChildren = {
+  PermissionsPermissionIdRoute: PermissionsPermissionIdRoute,
+  PermissionsCreateRoute: PermissionsCreateRoute,
+  PermissionsIndexRoute: PermissionsIndexRoute,
+  PermissionsEditPermissionIdRoute: PermissionsEditPermissionIdRoute,
+}
+
+const PermissionsRouteWithChildren = PermissionsRoute._addFileChildren(
+  PermissionsRouteChildren,
+)
+
+interface RolesRouteChildren {
+  RolesRoleIdRoute: typeof RolesRoleIdRoute
+  RolesCreateRoute: typeof RolesCreateRoute
+  RolesIndexRoute: typeof RolesIndexRoute
+  RolesEditRoleIdRoute: typeof RolesEditRoleIdRoute
+}
+
+const RolesRouteChildren: RolesRouteChildren = {
+  RolesRoleIdRoute: RolesRoleIdRoute,
+  RolesCreateRoute: RolesCreateRoute,
+  RolesIndexRoute: RolesIndexRoute,
+  RolesEditRoleIdRoute: RolesEditRoleIdRoute,
+}
+
+const RolesRouteWithChildren = RolesRoute._addFileChildren(RolesRouteChildren)
 
 interface StoriesRouteChildren {
   StoriesStoryIdRoute: typeof StoriesStoryIdRoute
@@ -648,25 +1253,80 @@ const StoriesRouteChildren: StoriesRouteChildren = {
 const StoriesRouteWithChildren =
   StoriesRoute._addFileChildren(StoriesRouteChildren)
 
+interface TeamRouteChildren {
+  TeamTeamIdRoute: typeof TeamTeamIdRoute
+  TeamCreateRoute: typeof TeamCreateRoute
+  TeamIndexRoute: typeof TeamIndexRoute
+  TeamEditTeamIdRoute: typeof TeamEditTeamIdRoute
+}
+
+const TeamRouteChildren: TeamRouteChildren = {
+  TeamTeamIdRoute: TeamTeamIdRoute,
+  TeamCreateRoute: TeamCreateRoute,
+  TeamIndexRoute: TeamIndexRoute,
+  TeamEditTeamIdRoute: TeamEditTeamIdRoute,
+}
+
+const TeamRouteWithChildren = TeamRoute._addFileChildren(TeamRouteChildren)
+
+interface UserGroupMembershipsRouteChildren {
+  UserGroupMembershipsMembershipIdRoute: typeof UserGroupMembershipsMembershipIdRoute
+  UserGroupMembershipsCreateRoute: typeof UserGroupMembershipsCreateRoute
+  UserGroupMembershipsIndexRoute: typeof UserGroupMembershipsIndexRoute
+  UserGroupMembershipsEditMembershipIdRoute: typeof UserGroupMembershipsEditMembershipIdRoute
+}
+
+const UserGroupMembershipsRouteChildren: UserGroupMembershipsRouteChildren = {
+  UserGroupMembershipsMembershipIdRoute: UserGroupMembershipsMembershipIdRoute,
+  UserGroupMembershipsCreateRoute: UserGroupMembershipsCreateRoute,
+  UserGroupMembershipsIndexRoute: UserGroupMembershipsIndexRoute,
+  UserGroupMembershipsEditMembershipIdRoute:
+    UserGroupMembershipsEditMembershipIdRoute,
+}
+
+const UserGroupMembershipsRouteWithChildren =
+  UserGroupMembershipsRoute._addFileChildren(UserGroupMembershipsRouteChildren)
+
+interface UsersRouteChildren {
+  UsersUserIdRoute: typeof UsersUserIdRoute
+  UsersCreateRoute: typeof UsersCreateRoute
+  UsersIndexRoute: typeof UsersIndexRoute
+  UsersEditUserIdRoute: typeof UsersEditUserIdRoute
+}
+
+const UsersRouteChildren: UsersRouteChildren = {
+  UsersUserIdRoute: UsersUserIdRoute,
+  UsersCreateRoute: UsersCreateRoute,
+  UsersIndexRoute: UsersIndexRoute,
+  UsersEditUserIdRoute: UsersEditUserIdRoute,
+}
+
+const UsersRouteWithChildren = UsersRoute._addFileChildren(UsersRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AttendanceRoute: AttendanceRoute,
   BoardRoute: BoardRoute,
   DashboardRoute: DashboardRoute,
   EmployeesRoute: EmployeesRoute,
+  GroupRoleAssignmentsRoute: GroupRoleAssignmentsRouteWithChildren,
   HrRoute: HrRoute,
   LeaveRoute: LeaveRoute,
   LoginRoute: LoginRoute,
   NotificationsRoute: NotificationsRoute,
   PayrollRoute: PayrollRoute,
+  PermissionsRoute: PermissionsRouteWithChildren,
   PluginsRoute: PluginsRoute,
   ProjectsRoute: ProjectsRoute,
   RecruitmentRoute: RecruitmentRoute,
   ReportsRoute: ReportsRoute,
+  RolesRoute: RolesRouteWithChildren,
   SettingsRoute: SettingsRoute,
   SprintsRoute: SprintsRoute,
   StoriesRoute: StoriesRouteWithChildren,
-  TeamRoute: TeamRoute,
+  TeamRoute: TeamRouteWithChildren,
+  UserGroupMembershipsRoute: UserGroupMembershipsRouteWithChildren,
+  UsersRoute: UsersRouteWithChildren,
   DefectsDefectIdRoute: DefectsDefectIdRoute,
   DefectsCreateRoute: DefectsCreateRoute,
   TasksTaskIdRoute: TasksTaskIdRoute,

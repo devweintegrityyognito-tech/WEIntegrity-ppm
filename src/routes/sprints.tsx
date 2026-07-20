@@ -87,7 +87,7 @@ function SprintsPage() {
               </span>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3 min-w-[280px]">
+          <div className="grid grid-cols-3 gap-3 min-w-70">
             {[
               { l: "Velocity", v: `${donePts} pts` },
               { l: "Remaining", v: `${totalPts - donePts} pts` },

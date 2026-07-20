@@ -6,8 +6,12 @@ import {
   Trello,
   Zap,
   Users,
+  UserCheck,
+  Shield,
+  KeyRound,
+  Link as LinkIcon,
   CalendarCheck,
-  UserCog,
+  User,
   BarChart3,
   Bell,
   Settings,
@@ -26,14 +30,28 @@ const ppmNav = [
   { to: "/stories/all", label: "Stories", icon: BookOpen },
   { to: "/board", label: "Board", icon: Trello },
   { to: "/sprints", label: "Sprints", icon: Zap },
-  { to: "/team", label: "Team", icon: Users },
+  { to: "/users", label: "Users", icon: User },
+  { to: "/team", label: "Groups", icon: Users },
+
+  {
+    to: "/user-group-memberships",
+    label: "User Group Memberships",
+    icon: UserCheck,
+  },
+  {
+    to: "/group-role-assignments",
+    label: "Group Role Assignments",
+    icon: LinkIcon,
+  },
+  { to: "/roles", label: "Roles", icon: Shield },
+  { to: "/permissions", label: "Permissions", icon: KeyRound },
   { to: "/reports", label: "Reports", icon: BarChart3 },
   { to: "/notifications", label: "Notifications", icon: Bell },
 ];
 
 const hrNav = [
   { to: "/hr", label: "HR Dashboard", icon: LayoutDashboard },
-  { to: "/employees", label: "Employees", icon: UserCog },
+  { to: "/employees", label: "Employees", icon: User },
   { to: "/attendance", label: "Attendance", icon: CalendarCheck },
   { to: "/leave", label: "Leave", icon: Plane },
   { to: "/payroll", label: "Payroll", icon: Wallet },
@@ -84,7 +102,7 @@ export function Sidebar() {
                   transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}
-              <Icon className="h-[18px] w-[18px] shrink-0" />
+              <Icon className="h-4.5 w-4.5 shrink-0" />
               <span className="font-medium">{item.label}</span>
             </Link>
           );
@@ -97,34 +115,24 @@ export function Sidebar() {
           to="/plugins"
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-white"
         >
-          <Puzzle className="h-[18px] w-[18px]" />
+          <Puzzle className="h-4.5 w-4.5" />
           <span className="font-medium">Plugins</span>
         </Link>
         <Link
           to="/settings"
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-white"
         >
-          <Settings className="h-[18px] w-[18px]" />
+          <Settings className="h-4.5 w-4.5" />
           <span className="font-medium">Settings</span>
         </Link>
         <Link
           to="/login"
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-white"
         >
-          <LogOut className="h-[18px] w-[18px]" />
+          <LogOut className="h-4.5 w-4.5" />
           <span className="font-medium">Sign out</span>
         </Link>
       </nav>
-
-      <div className="m-3 p-4 rounded-xl bg-gradient-to-br from-white/5 to-white/0 border border-white/10">
-        <div className="text-xs font-semibold text-white">Upgrade to Enterprise</div>
-        <div className="text-[11px] text-sidebar-foreground/60 mt-1">
-          SSO, audit logs & priority support.
-        </div>
-        <button className="mt-3 w-full text-xs font-medium bg-white text-sidebar py-1.5 rounded-md hover:bg-white/90 transition">
-          Contact sales
-        </button>
-      </div>
     </aside>
   );
 }

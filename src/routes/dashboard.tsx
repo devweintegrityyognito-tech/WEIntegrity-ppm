@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { AppShell } from "@/components/app/AppShell";
 import { StatCard } from "@/components/app/StatCard";
 import { Badge, statusTone } from "@/components/app/Badge";
@@ -30,15 +30,44 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Yognito" }] }),
+  beforeLoad: () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const user = localStorage.getItem("user") || sessionStorage.getItem("user");
+
+    if (!user) {
+      throw redirect({
+        to: "/login",
+      });
+    }
+  },
+
+  head: () => ({
+    meta: [{ title: "Dashboard — Yognito" }],
+  }),
+
   component: Dashboard,
 });
 
 const stagger = { animate: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 } };
 
+type ApiProject = {
+  id?: string;
+  _id?: string;
+  name: string;
+  key?: string;
+  client?: string;
+  status?: string;
+  progress?: number;
+  endDate?: string;
+  lead?: string;
+};
+
 function Dashboard() {
-  const [apiProjects, setApiProjects] = useState<any[]>([]);
+  const [apiProjects, setApiProjects] = useState<ApiProject[]>([]);
 
   useEffect(() => {
     fetch("https://weintegrity-ppm-main.onrender.com/api/projects")
@@ -281,7 +310,7 @@ function Dashboard() {
                         </div>
                       </td>
                       <td className="py-3">
-                        <Badge tone={statusTone(p.status)} dot>
+                        <Badge tone={statusTone(p.status ?? "Planning")} dot>
                           {p.status}
                         </Badge>
                       </td>
@@ -299,10 +328,12 @@ function Dashboard() {
                         </div>
                       </td>
                       <td className="py-3 pr-5 text-xs text-muted-foreground">
-                        {new Date(p.endDate).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
+                        {p.endDate
+                          ? new Date(p.endDate).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })
+                          : "-"}
                       </td>
                     </tr>
                   );
@@ -315,7 +346,7 @@ function Dashboard() {
         <div className="rounded-xl bg-card border border-border shadow-card p-5">
           <h3 className="font-semibold text-sm mb-1">Recent activity</h3>
           <p className="text-xs text-muted-foreground mb-4">Latest events across your workspace.</p>
-          <div className="absolute left-[11px] top-1.5 bottom-1.5 w-px bg-border" />
+          <div className="absolute left-2.75 top-1.5 bottom-1.5 w-px bg-border" />
           <ol className="relative space-y-4 ml-2">
             {activity.map((a) => {
               const u = userById(a.user);

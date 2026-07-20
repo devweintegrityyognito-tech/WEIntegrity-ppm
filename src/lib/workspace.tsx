@@ -54,7 +54,12 @@ export const PPM_ROUTES = [
   "/defects",
   "/board",
   "/sprints",
+  "/users",
   "/team",
+  "/user-group-memberships",
+  "/group-role-assignments",
+  "/roles",
+  "/permissions",
   "/reports",
   "/plugins",
 ];

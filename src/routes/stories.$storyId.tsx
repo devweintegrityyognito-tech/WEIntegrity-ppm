@@ -141,7 +141,7 @@ function TasksPanel({
                 <th className="text-left font-medium py-2.5 w-40">Assigned To</th>
                 <th className="text-right font-medium py-2.5 w-20">Est/Act</th>
                 <th className="text-left font-medium py-2.5 w-27.5 pl-3">Due</th>
-                <th className="w-20" />
+                <th className="w-20 py-2.5 pr-3 text-right font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -153,7 +153,7 @@ function TasksPanel({
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className="border-t border-border hover:bg-muted/30 group"
+                    className="border-t border-border hover:bg-muted/30"
                   >
                     <td className="py-2.5 pl-3 font-medium">
                       <button
@@ -212,7 +212,7 @@ function TasksPanel({
                         : "—"}
                     </td>
                     <td className="py-2.5 pr-3 text-right">
-                      <div className="inline-flex opacity-0 group-hover:opacity-100 transition">
+                      <div className="inline-flex">
                         <button
                           onClick={() =>
                             navigate({
@@ -221,7 +221,7 @@ function TasksPanel({
                               search: { storyId },
                             })
                           }
-                          className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
+                          className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-foreground"
                           title="Edit"
                         >
                           <Pencil className="h-3.5 w-3.5" />
@@ -233,7 +233,7 @@ function TasksPanel({
                             });
                             window.location.reload();
                           }}
-                          className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
+                          className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-foreground"
                           title="Delete"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
@@ -432,7 +432,7 @@ function DefectsPanel({ storyId, defects }: { storyId: string; defects: Defect[]
                 <th className="text-left font-medium py-2.5 w-35">Status</th>
                 <th className="text-left font-medium py-2.5 w-40">Assigned to</th>
                 <th className="text-left font-medium py-2.5 w-27.5 pl-3">Reported</th>
-                <th className="w-20" />
+                <th className="w-20 py-2.5 pr-3 text-right font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -444,7 +444,7 @@ function DefectsPanel({ storyId, defects }: { storyId: string; defects: Defect[]
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className="border-t border-border hover:bg-muted/30 group"
+                    className="border-t border-border hover:bg-muted/30"
                   >
                     <td className="py-2.5 pl-3 font-medium">
                       <button
@@ -501,7 +501,7 @@ function DefectsPanel({ storyId, defects }: { storyId: string; defects: Defect[]
                       })}
                     </td>
                     <td className="py-2.5 pr-3 text-right">
-                      <div className="inline-flex opacity-0 group-hover:opacity-100 transition">
+                      <div className="inline-flex">
                         <button
                           onClick={() => {
                             console.log("clicked");
@@ -518,7 +518,7 @@ function DefectsPanel({ storyId, defects }: { storyId: string; defects: Defect[]
                               },
                             });
                           }}
-                          className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
+                          className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-foreground"
                           title="Edit"
                         >
                           <Pencil className="h-3.5 w-3.5" />
@@ -532,7 +532,7 @@ function DefectsPanel({ storyId, defects }: { storyId: string; defects: Defect[]
                             localStorage.setItem("storyTab", "defects");
                             window.location.reload();
                           }}
-                          className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
+                          className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-foreground"
                           title="Delete"
                         >
                           <Trash2 className="h-3.5 w-3.5" />

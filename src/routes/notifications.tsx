@@ -52,7 +52,7 @@ function NotificationsPage() {
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: idx * 0.04 }}
-              className={`group flex items-start gap-4 px-5 py-4 border-b border-border last:border-0 hover:bg-muted/40 transition ${n.unread ? "bg-primary/[0.03]" : ""}`}
+              className={`group flex items-start gap-4 px-5 py-4 border-b border-border last:border-0 hover:bg-muted/40 transition ${n.unread ? "bg-primary/3" : ""}`}
             >
               <div
                 className={`h-10 w-10 rounded-lg grid place-items-center shrink-0 ${n.unread ? "bg-gradient-primary text-white" : "bg-muted text-muted-foreground"}`}

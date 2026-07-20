@@ -9,7 +9,22 @@ import { isPluginInstalled } from "@/lib/plugin-store";
 function useBreadcrumbs() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const parts = pathname.split("/").filter(Boolean);
-  return parts.length ? parts : ["dashboard"];
+  const routeLabels: Record<string, string> = {
+    dashboard: "Dashboard",
+    team: "Groups",
+    stories: "Stories",
+    projects: "Projects",
+    sprints: "Sprints",
+    board: "Board",
+    reports: "Reports",
+    notifications: "Notifications",
+    settings: "Settings",
+    defects: "Defects",
+    employees: "Employees",
+  };
+  return (parts.length ? parts : ["dashboard"]).map(
+    (part) => routeLabels[part] ?? part.replace(/-/g, " "),
+  );
 }
 
 export function Topbar() {
@@ -34,19 +49,26 @@ export function Topbar() {
             Home
           </Link>
           {crumbs.map((c, i) => {
-            const path = c === "stories" ? "/stories/all" : "/" + crumbs.slice(0, i + 1).join("/");
+            const path =
+              c === "Stories"
+                ? "/stories/all"
+                : c === "Groups"
+                  ? "/team"
+                  : "/" +
+                    crumbs
+                      .slice(0, i + 1)
+                      .map((x) => x.toLowerCase())
+                      .join("/");
 
             return (
               <span key={i} className="flex items-center gap-1.5">
                 <ChevronRight className="h-3.5 w-3.5 opacity-50" />
 
                 {i === crumbs.length - 1 ? (
-                  <span className="text-foreground font-medium capitalize">
-                    {c.replace(/-/g, " ")}
-                  </span>
+                  <span className="text-foreground font-medium capitalize">{c}</span>
                 ) : (
                   <Link to={path} className="capitalize hover:text-foreground transition">
-                    {c.replace(/-/g, " ")}
+                    {c}
                   </Link>
                 )}
               </span>
@@ -66,9 +88,6 @@ export function Topbar() {
         </div>
 
         <div className="flex items-center gap-1.5">
-          <button className="hidden md:inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-gradient-primary text-primary-foreground text-sm font-medium shadow-elegant hover:opacity-95 transition">
-            <Plus className="h-4 w-4" /> Create
-          </button>
           <button className="h-9 w-9 grid place-items-center rounded-lg hover:bg-muted text-muted-foreground">
             <HelpCircle className="h-4 w-4" />
           </button>

@@ -1,16 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "@tanstack/react-router";
-import {
-  Search,
-  Filter,
-  ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-  X,
-  Trash2,
-  Pencil,
-} from "lucide-react";
+import { Search, Filter, ChevronLeft, ChevronRight, X, Trash2, Pencil } from "lucide-react";
 import { Badge, priorityTone, statusTone } from "@/components/app/Badge";
 import {
   storiesStore,
@@ -227,65 +218,26 @@ export function StoriesList({
       ) : (
         <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-225">
+            <table className="w-full text-sm">
               <thead>
                 <tr className="text-[11px] uppercase tracking-wider text-muted-foreground bg-muted/40">
-                  <Th
-                    sortable
-                    onClick={() => toggleSort("key")}
-                    active={sortKey === "key"}
-                    dir={sortDir}
-                    className="pl-5 w-27.5"
-                  >
-                    ID
-                  </Th>
-                  <Th
-                    sortable
-                    onClick={() => toggleSort("title")}
-                    active={sortKey === "title"}
-                    dir={sortDir}
-                  >
-                    Title
-                  </Th>
-                  <Th
-                    sortable
-                    onClick={() => toggleSort("priority")}
-                    active={sortKey === "priority"}
-                    dir={sortDir}
-                    className="w-27.5"
-                  >
-                    Priority
-                  </Th>
-                  <Th
-                    sortable
-                    onClick={() => toggleSort("status")}
-                    active={sortKey === "status"}
-                    dir={sortDir}
-                    className="w-37.5"
-                  >
-                    Status
-                  </Th>
-                  <Th className="w-42.5">Assignee</Th>
-                  <Th className="w-40">Sprint</Th>
-                  <Th
-                    sortable
-                    onClick={() => toggleSort("dueDate")}
-                    active={sortKey === "dueDate"}
-                    dir={sortDir}
-                    className="w-27.5"
-                  >
-                    Due
-                  </Th>
-                  <Th
-                    sortable
-                    onClick={() => toggleSort("storyPoints")}
-                    active={sortKey === "storyPoints"}
-                    dir={sortDir}
-                    className="w-17.5 text-right pr-5"
-                  >
-                    SP
-                  </Th>
-                  <th className="w-10" />
+                  <th className="w-24 px-5 py-3 text-left font-medium">ID</th>
+
+                  <th className="px-5 py-3 text-left font-medium">Title</th>
+
+                  <th className="px-5 py-3 text-left font-medium">Priority</th>
+
+                  <th className="px-5 py-3 text-left font-medium">Status</th>
+
+                  <th className="px-5 py-3 text-left font-medium">Assignee</th>
+
+                  <th className="px-5 py-3 text-left font-medium">Sprint</th>
+
+                  <th className="px-5 py-3 text-left font-medium">Due</th>
+
+                  <th className="w-16 px-5 py-3 text-right font-medium">SP</th>
+
+                  <th className="w-16 px-4 py-3 text-right font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -297,9 +249,9 @@ export function StoriesList({
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
-                      className="border-t border-border hover:bg-muted/30 group"
+                      className="group border-t border-border hover:bg-muted/30 transition-colors"
                     >
-                      <td className="pl-5 py-3 font-mono text-xs text-muted-foreground">
+                      <td className="px-5 py-4 font-medium text-muted-foreground">
                         <Link
                           to="/stories/$storyId"
                           params={{ storyId: s.id }}
@@ -308,7 +260,7 @@ export function StoriesList({
                           {s.key ?? `ST-${s._id?.slice(-4)}`}
                         </Link>
                       </td>
-                      <td className="py-3 pr-3">
+                      <td className="px-5 py-4">
                         <Link
                           to="/stories/$storyId"
                           params={{ storyId: s.id }}
@@ -329,40 +281,36 @@ export function StoriesList({
                           </div>
                         )}
                       </td>
-                      <td className="py-3">
+                      <td className="px-5 py-4">
                         <Badge tone={priorityTone(s.priority)}>{s.priority}</Badge>
                       </td>
-                      <td className="py-3">
+                      <td className="px-5 py-4">
                         <Badge tone={statusTone(s.status)} dot>
                           {s.status}
                         </Badge>
                       </td>
-                      <td className="py-3">
+                      <td className="px-5 py-4">
                         <div className="flex items-center gap-2">
                           <img
                             src={userById(s.assigneeId).avatar}
                             alt={userById(s.assigneeId).name}
                             className="h-6 w-6 rounded-full border border-border"
                           />
-                          <span className="text-xs truncate max-w-30">
-                            {userById(s.assigneeId).name}
-                          </span>
+                          <span className="truncate max-w-30">{userById(s.assigneeId).name}</span>
                         </div>
                       </td>
-                      <td className="py-3 text-xs text-muted-foreground truncate">
+                      <td className="px-5 py-4 text-sm text-muted-foreground">
                         {SPRINTS.find((sp) => sp.id === s.sprintId)?.name ?? "—"}
                       </td>
-                      <td className="py-3 text-xs">
+                      <td className="px-5 py-4 text-sm">
                         {new Date(s.dueDate).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
                         })}
                       </td>
-                      <td className="py-3 pr-5 text-right text-xs font-semibold tabular-nums">
-                        {s.storyPoints}
-                      </td>
-                      <td className="py-3 pr-3">
-                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition">
+                      <td className="w-16 px-5 py-4 text-right font-medium">{s.storyPoints}</td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center justify-end gap-1">
                           {/* Edit */}
                           <button
                             onClick={() =>
@@ -435,39 +383,6 @@ export function StoriesList({
         </div>
       )}
     </>
-  );
-}
-
-function Th({
-  children,
-  sortable,
-  active,
-  dir,
-  onClick,
-  className = "",
-}: {
-  children: React.ReactNode;
-  sortable?: boolean;
-  active?: boolean;
-  dir?: "asc" | "desc";
-  onClick?: () => void;
-  className?: string;
-}) {
-  return (
-    <th className={`text-left font-medium py-2.5 ${className}`}>
-      {sortable ? (
-        <button
-          onClick={onClick}
-          className={`inline-flex items-center gap-1 hover:text-foreground transition ${active ? "text-foreground" : ""}`}
-        >
-          {children}
-          <ArrowUpDown className={`h-3 w-3 ${active ? "opacity-100" : "opacity-40"}`} />
-          {active && <span className="text-[9px]">{dir === "asc" ? "↑" : "↓"}</span>}
-        </button>
-      ) : (
-        children
-      )}
-    </th>
   );
 }
 

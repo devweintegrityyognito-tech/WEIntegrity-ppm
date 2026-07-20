@@ -1,7 +1,18 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Sparkles, Github, Chrome, ArrowRight, ShieldCheck, Zap, Users } from "lucide-react";
-import { useState, FormEvent } from "react";
+import {
+  Sparkles,
+  Github,
+  Chrome,
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+  Users,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import { useState, useEffect, FormEvent } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Sign in — Yognito PPM" }] }),
@@ -11,11 +22,74 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const nav = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberEmail");
 
-  const submit = (e: FormEvent) => {
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
+
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
+
     setLoading(true);
-    setTimeout(() => nav({ to: "/dashboard" }), 700);
+
+    try {
+      const res = await fetch("https://weintegrity-ppm-main.onrender.com/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message || "Login failed");
+        return;
+      }
+
+      if (rememberMe) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("rememberEmail", email);
+      } else {
+        sessionStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.removeItem("rememberEmail");
+      }
+
+      setTimeout(() => {
+        nav({ to: "/dashboard" });
+
+        setTimeout(() => {
+          toast.custom((t) => (
+            <div className="flex items-center justify-between gap-8 rounded-lg bg-gradient-primary px-5 py-4 text-primary-foreground shadow-elegant min-w-[320px]">
+              <span className="font-medium">Login successful!</span>
+
+              <button
+                onClick={() => toast.dismiss(t)}
+                className="text-xl leading-none opacity-90 hover:opacity-100"
+              >
+                ×
+              </button>
+            </div>
+          ));
+        }, 200);
+      }, 700);
+    } catch {
+      toast.error("Unable to connect to server.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -32,7 +106,7 @@ function LoginPage() {
           aria-hidden
           animate={{ scale: [1, 1.15, 1], rotate: [0, -20, 0] }}
           transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -bottom-40 -right-20 h-[28rem] w-[28rem] rounded-full bg-[oklch(0.65_0.22_295)]/30 blur-3xl"
+          className="absolute -bottom-40 -right-20 h-112 w-md rounded-full bg-[oklch(0.65_0.22_295)]/30 blur-3xl"
         />
 
         <div className="relative flex items-center gap-2.5">
@@ -108,10 +182,16 @@ function LoginPage() {
           </p>
 
           <div className="grid grid-cols-2 gap-2.5 mt-7">
-            <button className="h-10 rounded-lg border border-border bg-card hover:bg-muted/50 text-sm font-medium inline-flex items-center justify-center gap-2 transition">
+            <button
+              disabled
+              className="h-10 rounded-lg border border-border bg-card hover:bg-muted/50 text-sm font-medium inline-flex items-center justify-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <Chrome className="h-4 w-4" /> Google
             </button>
-            <button className="h-10 rounded-lg border border-border bg-card hover:bg-muted/50 text-sm font-medium inline-flex items-center justify-center gap-2 transition">
+            <button
+              disabled
+              className="h-10 rounded-lg border border-border bg-card hover:bg-muted/50 text-sm font-medium inline-flex items-center justify-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <Github className="h-4 w-4" /> GitHub
             </button>
           </div>
@@ -126,7 +206,9 @@ function LoginPage() {
               <input
                 type="email"
                 required
-                defaultValue="aarav.sharma@yognito.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your work email"
                 className="mt-1.5 w-full h-10 px-3 rounded-lg border border-border bg-card text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20 transition"
               />
             </div>
@@ -137,22 +219,39 @@ function LoginPage() {
                   Forgot password?
                 </Link>
               </div>
-              <input
-                type="password"
-                required
-                defaultValue="••••••••••"
-                className="mt-1.5 w-full h-10 px-3 rounded-lg border border-border bg-card text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20 transition"
-              />
+              <div className="relative mt-1.5">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full h-10 px-3 pr-10 rounded-lg border border-border bg-card text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20 transition"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
             <label className="flex items-center gap-2 text-xs text-muted-foreground select-none">
-              <input type="checkbox" defaultChecked className="rounded border-border" />
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="rounded border-border"
+              />
               Keep me signed in for 30 days
             </label>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-10 rounded-lg bg-gradient-primary text-primary-foreground text-sm font-semibold inline-flex items-center justify-center gap-2 shadow-elegant hover:opacity-95 disabled:opacity-70 transition"
+              className="w-full h-10 rounded-lg bg-gradient-primary text-primary-foreground text-sm font-semibold inline-flex items-center justify-center gap-2 shadow-md hover:opacity-95 disabled:opacity-70 transition"
             >
               {loading ? (
                 "Signing you in…"
@@ -163,13 +262,6 @@ function LoginPage() {
               )}
             </button>
           </form>
-
-          <p className="text-xs text-muted-foreground text-center mt-6">
-            Don't have an account?{" "}
-            <Link to="/login" className="text-primary font-medium hover:underline">
-              Request a demo
-            </Link>
-          </p>
         </motion.div>
       </div>
     </div>
