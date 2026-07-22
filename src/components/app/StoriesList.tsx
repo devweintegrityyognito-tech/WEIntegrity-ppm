@@ -7,13 +7,12 @@ import {
   storiesStore,
   PRIORITIES,
   STATUSES,
-  ASSIGNEES,
   SPRINTS,
   type Story,
   type StoryStatus,
   type StoryPriority,
 } from "@/lib/stories-store";
-import { userById } from "@/lib/mock-data";
+import { useUsers } from "@/lib/users-store";
 
 type SortKey = "key" | "title" | "priority" | "status" | "dueDate" | "storyPoints";
 const PAGE_SIZE = 8;
@@ -53,6 +52,7 @@ export function StoriesList({
   const [page, setPage] = useState(1);
 
   const navigate = useNavigate();
+  const users = useUsers();
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
     let list = stories.filter((st) => {
@@ -173,7 +173,10 @@ export function StoriesList({
               label="Assignee"
               options={[
                 { value: "all", label: "All assignees" },
-                ...ASSIGNEES.map((u) => ({ value: u.id, label: u.name })),
+                ...users.map((u) => ({
+                  value: u.id,
+                  label: `${u.firstName} ${u.lastName}`,
+                })),
               ]}
             />
             <SelectField
@@ -242,107 +245,113 @@ export function StoriesList({
               </thead>
               <tbody>
                 <AnimatePresence initial={false}>
-                  {paged.map((s) => (
-                    <motion.tr
-                      key={s.id}
-                      layout
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="group border-t border-border hover:bg-muted/30 transition-colors"
-                    >
-                      <td className="px-5 py-4 font-medium text-muted-foreground">
-                        <Link
-                          to="/stories/$storyId"
-                          params={{ storyId: s.id }}
-                          className="hover:text-foreground hover:underline"
-                        >
-                          {s.key ?? `ST-${s._id?.slice(-4)}`}
-                        </Link>
-                      </td>
-                      <td className="px-5 py-4">
-                        <Link
-                          to="/stories/$storyId"
-                          params={{ storyId: s.id }}
-                          className="font-medium leading-tight hover:underline"
-                        >
-                          {s.title}
-                        </Link>
-                        {s.labels.length > 0 && (
-                          <div className="flex items-center gap-1 mt-1 flex-wrap">
-                            {s.labels.slice(0, 3).map((l) => (
-                              <span
-                                key={l}
-                                className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground"
-                              >
-                                #{l}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-5 py-4">
-                        <Badge tone={priorityTone(s.priority)}>{s.priority}</Badge>
-                      </td>
-                      <td className="px-5 py-4">
-                        <Badge tone={statusTone(s.status)} dot>
-                          {s.status}
-                        </Badge>
-                      </td>
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={userById(s.assigneeId).avatar}
-                            alt={userById(s.assigneeId).name}
-                            className="h-6 w-6 rounded-full border border-border"
-                          />
-                          <span className="truncate max-w-30">{userById(s.assigneeId).name}</span>
-                        </div>
-                      </td>
-                      <td className="px-5 py-4 text-sm text-muted-foreground">
-                        {SPRINTS.find((sp) => sp.id === s.sprintId)?.name ?? "—"}
-                      </td>
-                      <td className="px-5 py-4 text-sm">
-                        {new Date(s.dueDate).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </td>
-                      <td className="w-16 px-5 py-4 text-right font-medium">{s.storyPoints}</td>
-                      <td className="px-4 py-4">
-                        <div className="flex items-center justify-end gap-1">
-                          {/* Edit */}
-                          <button
-                            onClick={() =>
-                              navigate({
-                                to: "/stories/edit/$storyId",
-                                params: { storyId: s.id },
-                              })
-                            }
-                            title="Edit"
-                            className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted"
-                          >
-                            <Pencil className="h-3.5 w-3.5" />
-                          </button>
+                  {paged.map((s) => {
+                    const assignee = users.find((u) => u.id === s.assigneeId);
 
-                          {/* Delete */}
-                          <button
-                            onClick={() => {
-                              fetch(`https://weintegrity-ppm-main.onrender.com/api/stories/${s.id}`, {
-                                method: "DELETE",
-                              })
-                                .then(() => window.location.reload())
-                                .catch(console.error);
-                            }}
-                            title="Delete"
-                            className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted"
+                    return (
+                      <motion.tr
+                        key={s.id}
+                        layout
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className="group border-t border-border hover:bg-muted/30 transition-colors"
+                      >
+                        <td className="px-5 py-4 font-medium text-muted-foreground">
+                          <Link
+                            to="/stories/$storyId"
+                            params={{ storyId: s.id }}
+                            className="hover:text-foreground hover:underline"
                           >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
+                            {s.key ?? `ST-${s._id?.slice(-4)}`}
+                          </Link>
+                        </td>
+                        <td className="px-5 py-4">
+                          <Link
+                            to="/stories/$storyId"
+                            params={{ storyId: s.id }}
+                            className="font-medium leading-tight hover:underline"
+                          >
+                            {s.title}
+                          </Link>
+                          {s.labels.length > 0 && (
+                            <div className="flex items-center gap-1 mt-1 flex-wrap">
+                              {s.labels.slice(0, 3).map((l) => (
+                                <span
+                                  key={l}
+                                  className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground"
+                                >
+                                  #{l}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-5 py-4">
+                          <Badge tone={priorityTone(s.priority)}>{s.priority}</Badge>
+                        </td>
+                        <td className="px-5 py-4">
+                          <Badge tone={statusTone(s.status)} dot>
+                            {s.status}
+                          </Badge>
+                        </td>
+                        <td className="px-5 py-4">
+                          <div className="flex items-center gap-2">
+                            <img
+                              src={assignee?.profilePicture || ""}
+                              alt={assignee ? `${assignee.firstName} ${assignee.lastName}` : "User"}
+                              className="h-6 w-6 rounded-full border border-border"
+                            />
+                            <span className="truncate max-w-30">
+                              {assignee ? `${assignee.firstName} ${assignee.lastName}` : "-"}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-5 py-4 text-sm text-muted-foreground">
+                          {SPRINTS.find((sp) => sp.id === s.sprintId)?.name ?? "—"}
+                        </td>
+                        <td className="px-5 py-4 text-sm">
+                          {new Date(s.dueDate).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </td>
+                        <td className="w-16 px-5 py-4 text-right font-medium">{s.storyPoints}</td>
+                        <td className="px-4 py-4">
+                          <div className="flex items-center justify-end gap-1">
+                            {/* Edit */}
+                            <button
+                              onClick={() =>
+                                navigate({
+                                  to: "/stories/edit/$storyId",
+                                  params: { storyId: s.id },
+                                })
+                              }
+                              title="Edit"
+                              className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted"
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </button>
+
+                            {/* Delete */}
+                            <button
+                              onClick={() => {
+                                fetch(`https://weintegrity-ppm-main.onrender.com/api/stories/${s.id}`, {
+                                  method: "DELETE",
+                                })
+                                  .then(() => window.location.reload())
+                                  .catch(console.error);
+                              }}
+                              title="Delete"
+                              className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </motion.tr>
+                    );
+                  })}
                 </AnimatePresence>
                 {paged.length === 0 && (
                   <tr>

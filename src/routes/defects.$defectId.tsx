@@ -6,7 +6,8 @@ import { Badge, priorityTone, statusTone } from "@/components/app/Badge";
 import { useDefects, defectsStore, DEFECT_STATUSES, type DefectStatus } from "@/lib/defects-store";
 import { useStories } from "@/lib/stories-store";
 import { useScrumTasks } from "@/lib/scrum-tasks-store";
-import { userById, currentUser } from "@/lib/mock-data";
+import { currentUser } from "@/lib/mock-data";
+import { useUsers } from "@/lib/users-store";
 import DefectViewForm from "@/components/defect/DefectViewForm";
 
 export const Route = createFileRoute("/defects/$defectId")({
@@ -21,6 +22,7 @@ function DefectDetail() {
   const all = useDefects();
   const stories = useStories();
   const tasks = useScrumTasks();
+  const users = useUsers();
   const defect = useMemo(() => all.find((d) => d.id === defectId), [all, defectId]);
   const story = defect ? stories.find((s) => s.id === defect.storyId) : undefined;
   const relatedTask = defect ? tasks.find((t) => t.storyId === defect.storyId) : undefined;
@@ -45,13 +47,25 @@ function DefectDetail() {
     );
   }
 
-  const reporter = userById(defect.reportedBy);
-  const assignee = userById(defect.assignedTo);
+  const reporter = users.find((u) => u.id === defect.reportedBy);
+  const assignee = users.find((u) => u.id === defect.assignedTo);
 
   const activity = [
-    { id: "a1", label: `Defect reported by ${reporter.name}`, ts: defect.createdDate },
-    { id: "a2", label: `Assigned to ${assignee.name}`, ts: defect.createdDate },
-    { id: "a3", label: `Status updated to ${defect.status}`, ts: defect.updatedAt },
+    {
+      id: "a1",
+      label: `Defect reported by ${reporter ? `${reporter.firstName} ${reporter.lastName}` : ""}`,
+      ts: defect.createdDate,
+    },
+    {
+      id: "a2",
+      label: `Assigned to ${assignee ? `${assignee.firstName} ${assignee.lastName}` : ""}`,
+      ts: defect.createdDate,
+    },
+    {
+      id: "a3",
+      label: `Status updated to ${defect.status}`,
+      ts: defect.updatedAt,
+    },
     ...(defect.resolvedDate
       ? [{ id: "a4", label: `Marked ${defect.status}`, ts: defect.resolvedDate }]
       : []),

@@ -1,5 +1,5 @@
 import type { Defect } from "@/lib/defects-store";
-import { userById } from "@/lib/mock-data";
+import { useUsers } from "@/lib/users-store";
 import { Sparkles } from "lucide-react";
 
 type DefectViewFormProps = {
@@ -7,8 +7,9 @@ type DefectViewFormProps = {
 };
 
 export default function DefectViewForm({ defect }: DefectViewFormProps) {
-  const reporter = userById(defect.reportedBy);
-  const assignee = userById(defect.assignedTo);
+  const users = useUsers();
+  const reporter = users.find((u) => u.id === defect.reportedBy);
+  const assignee = users.find((u) => u.id === defect.assignedTo);
   return (
     <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
       <div className="flex items-center gap-3 px-6 py-5 border-b border-border bg-muted/20">
@@ -64,7 +65,7 @@ export default function DefectViewForm({ defect }: DefectViewFormProps) {
           <div>
             <label className="block text-sm font-medium mb-2">Assigned To</label>
             <input
-              value={assignee.name}
+              value={assignee ? `${assignee.firstName} ${assignee.lastName}` : ""}
               readOnly
               className="w-full h-10 px-3 rounded-lg border border-border bg-muted text-sm mt-1"
             />
@@ -73,7 +74,7 @@ export default function DefectViewForm({ defect }: DefectViewFormProps) {
           <div>
             <label className="block text-sm font-medium mb-2">Reported By</label>
             <input
-              value={reporter.name}
+              value={reporter ? `${reporter.firstName} ${reporter.lastName}` : ""}
               readOnly
               className="w-full h-10 px-3 rounded-lg border border-border bg-muted text-sm mt-1"
             />

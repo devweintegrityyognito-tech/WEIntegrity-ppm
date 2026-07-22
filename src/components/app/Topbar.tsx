@@ -1,6 +1,6 @@
 import { useRouterState, Link, useNavigate } from "@tanstack/react-router";
 import { Search, Bell, Plus, HelpCircle, ChevronRight, Grid3X3 } from "lucide-react";
-import { currentUser, notifications } from "@/lib/mock-data";
+import { notifications } from "@/lib/mock-data";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useWorkspace } from "@/lib/workspace";
@@ -37,6 +37,14 @@ export function Topbar() {
   const [openNotif, setOpenNotif] = useState(false);
 
   const [openScope, setOpenScope] = useState(false);
+
+  const loggedInUser = (() => {
+    if (typeof window === "undefined") return null;
+
+    const storedUser = localStorage.getItem("user") || sessionStorage.getItem("user");
+
+    return storedUser ? JSON.parse(storedUser) : null;
+  })();
 
   const hrInstalled = typeof window !== "undefined" ? isPluginInstalled("hr") : false;
 
@@ -193,15 +201,24 @@ export function Topbar() {
             </AnimatePresence>
           </div>
           <div className="ml-2 flex items-center gap-2.5 pl-2 border-l border-border">
-            <img
-              src={currentUser.avatar}
-              alt={currentUser.name}
-              className="h-8 w-8 rounded-full border border-border"
-            />
+            {loggedInUser?.avatar ? (
+              <img
+                src={loggedInUser.avatar}
+                alt={loggedInUser.name}
+                className="h-8 w-8 rounded-full border border-border"
+              />
+            ) : (
+              <div className="h-8 w-8 rounded-full border border-border bg-muted flex items-center justify-center text-xs font-semibold">
+                {(loggedInUser?.name || "U").charAt(0).toUpperCase()}
+              </div>
+            )}
+
             <div className="hidden md:block">
-              <div className="text-xs font-semibold leading-tight">{currentUser.name}</div>
+              <div className="text-xs font-semibold leading-tight">
+                {loggedInUser?.name || "User"}
+              </div>
               <div className="text-[10px] text-muted-foreground leading-tight">
-                {currentUser.role}
+                {loggedInUser?.role || ""}
               </div>
             </div>
           </div>

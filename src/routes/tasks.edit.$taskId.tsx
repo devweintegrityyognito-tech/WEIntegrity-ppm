@@ -3,12 +3,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Hash, Loader2, Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { useUsers } from "@/lib/users-store";
+import { useTeams } from "@/lib/teams-store";
 import {
   PRIORITIES,
-  ASSIGNEES,
   SPRINTS,
   PROJECTS,
-  TEAMS,
   type StoryPriority,
   type StoryStatus,
 } from "@/lib/stories-store";
@@ -28,10 +28,12 @@ function CreateTaskPage() {
   const navigate = useNavigate();
   const { taskId } = Route.useParams();
   const { storyId } = useSearch({ from: "/tasks/edit/$taskId" });
+  const users = useUsers();
+  const teams = useTeams();
   const [title, setTitle] = useState("");
   const [projectId, setProjectId] = useState(PROJECTS[0].id);
   const [sprintId, setSprintId] = useState(SPRINTS[0].id);
-  const [team, setTeam] = useState(TEAMS[0]);
+  const [team, setTeam] = useState("");
   const [assigneeId, setAssigneeId] = useState(currentUser.id);
   const [priority, setPriority] = useState<StoryPriority>("Medium");
   const [type, setType] = useState("Development");
@@ -69,6 +71,11 @@ function CreateTaskPage() {
       });
   }, [taskId]);
 
+  useEffect(() => {
+    if (!team && teams.length > 0) {
+      setTeam(teams[0].name);
+    }
+  }, [teams, team]);
   const validate = () => {
     const e: Record<string, string> = {};
 
@@ -215,7 +222,10 @@ function CreateTaskPage() {
                 <FormSelect
                   value={team}
                   onChange={setTeam}
-                  options={TEAMS.map((t) => ({ value: t, label: t }))}
+                  options={teams.map((t) => ({
+                    value: t.name,
+                    label: t.name,
+                  }))}
                 />
               </Field>
 
@@ -223,7 +233,10 @@ function CreateTaskPage() {
                 <FormSelect
                   value={assigneeId}
                   onChange={setAssigneeId}
-                  options={ASSIGNEES.map((u) => ({ value: u.id, label: `${u.name} · ${u.title}` }))}
+                  options={users.map((u) => ({
+                    value: u.id,
+                    label: `${u.firstName} ${u.lastName}`,
+                  }))}
                 />
               </Field>
               <Field label="Priority" required>

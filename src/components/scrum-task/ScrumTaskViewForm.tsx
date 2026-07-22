@@ -1,4 +1,4 @@
-import { userById } from "@/lib/mock-data";
+import { useUsers } from "@/lib/users-store";
 import type { ScrumTask } from "@/lib/scrum-tasks-store";
 import { Sparkles } from "lucide-react";
 interface ScrumTaskViewFormProps {
@@ -6,8 +6,9 @@ interface ScrumTaskViewFormProps {
 }
 
 export default function ScrumTaskViewForm({ task }: ScrumTaskViewFormProps) {
-  const assignee = userById(task.assigneeId);
-  const creator = userById(task.createdBy);
+  const users = useUsers();
+  const assignee = users.find((u) => u.id === task.assigneeId);
+  const creator = users.find((u) => u.id === task.createdBy);
   return (
     <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
       <div className="flex items-center gap-3 px-6 py-5 border-b border-border bg-muted/20">
@@ -39,7 +40,7 @@ export default function ScrumTaskViewForm({ task }: ScrumTaskViewFormProps) {
           <div>
             <label className="block text-sm font-medium mb-2">Assigned To</label>
             <input
-              value={assignee.name}
+              value={assignee ? `${assignee.firstName} ${assignee.lastName}` : ""}
               readOnly
               className="w-full h-10 px-3 rounded-lg border border-border bg-muted text-sm"
             />
@@ -111,7 +112,7 @@ export default function ScrumTaskViewForm({ task }: ScrumTaskViewFormProps) {
           <div>
             <label className="block text-sm font-medium mb-2">Created By</label>
             <input
-              value={`${creator.name} (${creator.role})`}
+              value={creator ? `${creator.firstName} ${creator.lastName} (${creator.role})` : ""}
               readOnly
               className="w-full h-10 px-3 rounded-lg border border-border bg-muted text-sm"
             />

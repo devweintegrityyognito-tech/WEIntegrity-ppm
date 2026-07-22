@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useUsers } from "@/lib/users-store";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Hash, Loader2, Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import {
   PRIORITIES,
-  ASSIGNEES,
   SPRINTS,
   PROJECTS,
   EPICS,
@@ -33,6 +33,7 @@ function CreateStoryPage() {
   const [assigneeId, setAssigneeId] = useState(currentUser.id);
   const [priority, setPriority] = useState<StoryPriority>("Medium");
   const [storyPoints, setStoryPoints] = useState(3);
+  const users = useUsers();
   const [dueDate, setDueDate] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() + 7);
@@ -190,7 +191,10 @@ function CreateStoryPage() {
                 <FormSelect
                   value={assigneeId}
                   onChange={setAssigneeId}
-                  options={ASSIGNEES.map((u) => ({ value: u.id, label: `${u.name} · ${u.title}` }))}
+                  options={users.map((u) => ({
+                    value: u.id,
+                    label: `${u.firstName} ${u.lastName} · ${u.role}`,
+                  }))}
                 />
               </Field>
 

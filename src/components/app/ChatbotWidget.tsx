@@ -180,7 +180,7 @@ export function ChatbotWidget() {
               }
             }}
             style={{ left: pos.x, top: pos.y, touchAction: "none" }}
-            className="fixed z-[9999] h-14 w-14 rounded-full bg-gradient-primary text-white shadow-glow grid place-items-center hover:scale-105 transition cursor-grab active:cursor-grabbing"
+            className="fixed z-9999 h-14 w-14 rounded-full bg-gradient-primary text-white shadow-glow grid place-items-center hover:scale-105 transition cursor-grab active:cursor-grabbing"
             aria-label="Open AI assistant (drag to move)"
           >
             <Bot className="h-6 w-6 pointer-events-none" />
@@ -198,8 +198,8 @@ export function ChatbotWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.96 }}
             transition={{ type: "spring", stiffness: 280, damping: 26 }}
-            className={`fixed z-[9999] w-[380px] max-w-[calc(100vw-2rem)] rounded-2xl bg-popover border border-border shadow-card overflow-hidden flex flex-col ${
-              min ? "h-14" : "h-[580px] max-h-[calc(100vh-3rem)]"
+            className={`fixed z-9999 w-95 max-w-[calc(100vw-2rem)] rounded-2xl bg-popover border border-border shadow-card overflow-hidden flex flex-col ${
+              min ? "h-14" : "h-145 max-h-[calc(100vh-3rem)]"
             }`}
             style={(() => {
               const panelW = 380;

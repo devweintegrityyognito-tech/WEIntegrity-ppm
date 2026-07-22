@@ -12,7 +12,8 @@ import {
   type TaskStatus,
 } from "@/lib/scrum-tasks-store";
 import { useStories } from "@/lib/stories-store";
-import { userById, projects, currentUser } from "@/lib/mock-data";
+import { projects, currentUser } from "@/lib/mock-data";
+import { useUsers } from "@/lib/users-store";
 
 export const Route = createFileRoute("/tasks/$taskId")({
   head: () => ({ meta: [{ title: "Task Detail — Yognito" }] }),
@@ -24,6 +25,7 @@ type Comment = { id: string; author: string; text: string; ts: string };
 function TaskDetail() {
   const { taskId } = useParams({ from: "/tasks/$taskId" });
   const allTasks = useScrumTasks();
+  const users = useUsers();
   const stories = useStories();
   const task = useMemo(
     () => allTasks.find((t) => t._id === taskId || t.id === taskId),
@@ -51,13 +53,25 @@ function TaskDetail() {
     );
   }
 
-  const assignee = userById(task.assigneeId);
-  const creator = userById(task.createdBy);
+  const assignee = users.find((u) => u.id === task.assigneeId);
+  const creator = users.find((u) => u.id === task.createdBy);
 
   const activity = [
-    { id: "a1", label: `Task created by ${creator.name}`, ts: task.createdAt },
-    { id: "a2", label: `Assigned to ${assignee.name}`, ts: task.createdAt },
-    { id: "a3", label: `Status set to ${task.status}`, ts: task.updatedAt },
+    {
+      id: "a1",
+      label: `Task created by ${creator ? `${creator.firstName} ${creator.lastName}` : ""}`,
+      ts: task.createdAt,
+    },
+    {
+      id: "a2",
+      label: `Assigned to ${assignee ? `${assignee.firstName} ${assignee.lastName}` : ""}`,
+      ts: task.createdAt,
+    },
+    {
+      id: "a3",
+      label: `Status set to ${task.status}`,
+      ts: task.updatedAt,
+    },
   ];
 
   return (

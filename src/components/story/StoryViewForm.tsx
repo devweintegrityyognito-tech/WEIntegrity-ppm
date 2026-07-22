@@ -1,6 +1,6 @@
 import type { Story } from "@/lib/stories-store";
 import { PROJECTS, SPRINTS } from "@/lib/stories-store";
-import { userById } from "@/lib/mock-data";
+import { useUsers } from "@/lib/users-store";
 import { Sparkles } from "lucide-react";
 
 type StoryViewFormProps = {
@@ -10,7 +10,8 @@ type StoryViewFormProps = {
 export default function StoryViewForm({ story }: StoryViewFormProps) {
   const project = PROJECTS.find((p) => p.id === story.projectId);
   const sprint = SPRINTS.find((s) => s.id === story.sprintId);
-  const assignee = userById(story.assigneeId);
+  const users = useUsers();
+  const assignee = users.find((u) => u.id === story.assigneeId);
   return (
     <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
       <div className="flex items-center gap-3 px-6 py-5 border-b border-border bg-muted/20">
@@ -55,7 +56,7 @@ export default function StoryViewForm({ story }: StoryViewFormProps) {
           <div>
             <label className="block text-sm font-medium mb-2">Assigned To</label>
             <input
-              value={assignee.name}
+              value={assignee ? `${assignee.firstName} ${assignee.lastName}` : ""}
               readOnly
               className="w-full h-10 px-3 rounded-lg border border-border bg-muted text-sm mt-1"
             />

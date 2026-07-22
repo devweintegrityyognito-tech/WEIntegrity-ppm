@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { sprints, users, projects } from "./mock-data";
+import { sprints, projects } from "./mock-data";
 
 export type StoryPriority = "Low" | "Medium" | "High" | "Critical";
 export type BusinessValue = "Low" | "Medium" | "High";
@@ -86,7 +86,6 @@ export function useStories(): Story[] {
 export const PRIORITIES: StoryPriority[] = ["Low", "Medium", "High", "Critical"];
 export const STATUSES = ["Backlog", "Ready", "In Progress", "In Review", "Done"];
 export const STORY_TYPES: StoryType[] = ["Story", "Task", "Bug", "Epic", "Spike"];
-export const ASSIGNEES = users;
 export const SPRINTS = sprints;
 export const PROJECTS = projects;
 export const EPICS = [
@@ -95,4 +94,3 @@ export const EPICS = [
   { id: "epic-3", name: "Project Management" },
 ];
 export const BUSINESS_VALUES: BusinessValue[] = ["Low", "Medium", "High"];
-export const TEAMS = Array.from(new Set(users.map((u) => u.team)));

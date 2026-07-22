@@ -285,7 +285,7 @@ function Dashboard() {
                 {(apiProjects || []).slice(0, 5).map((p) => {
                   const lead = userById(p.lead || "u-2");
                   return (
-                    <tr key={p.id} className="border-t border-border hover:bg-muted/30 transition">
+                    <tr key={p._id} className="border-t border-border hover:bg-muted/30 transition">
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-3">
                           <div className="h-8 w-8 rounded-lg bg-gradient-primary grid place-items-center text-[10px] font-bold text-white">
@@ -302,7 +302,7 @@ function Dashboard() {
                       <td className="py-3">
                         <div className="flex items-center gap-2">
                           <img
-                            src={lead?.avatar}
+                            src={lead?.avatar || "/default-avatar.png"}
                             alt={lead?.name}
                             className="h-6 w-6 rounded-full border border-border"
                           />

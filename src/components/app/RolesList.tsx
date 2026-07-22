@@ -41,63 +41,74 @@ export function RolesList({ roles }: RolesListProps) {
           </thead>
 
           <tbody>
-            {pagedRoles.map((role) => (
-              <tr
-                key={role.id}
-                className="group border-t border-border hover:bg-muted/30 transition-colors cursor-pointer"
-              >
-                <td className="px-5 py-4">
-                  <Link to="/roles/$roleId" params={{ roleId: role.id }} className="block">
-                    <div className="font-medium hover:text-primary">{role.roleName}</div>
-
-                    <div className="text-xs text-muted-foreground">{role.description || "-"}</div>
-                  </Link>
-                </td>
-
-                <td className="px-5 py-4">{role.roleCode}</td>
-
-                <td className="px-5 py-4">{role.roleType}</td>
-                <td className="px-5 py-4">{role.priority}</td>
-
-                <td className="px-5 py-4">
-                  <Badge tone={role.status === "Active" ? "success" : "muted"}>{role.status}</Badge>
-                </td>
-
-                <td className="px-4 py-4">
-                  <div className="flex items-center justify-end gap-1">
-                    <Link
-                      to="/roles/edit/$roleId"
-                      params={{ roleId: role.id }}
-                      onClick={(e) => e.stopPropagation()}
-                      title="Edit"
-                      className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted"
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </Link>
-
-                    <button
-                      onClick={async (e) => {
-                        e.stopPropagation();
-
-                        try {
-                          await rolesStore.remove(role.id);
-
-                          toast.success("Role deleted successfully");
-                        } catch (error) {
-                          console.error(error);
-
-                          toast.error("Failed to delete role");
-                        }
-                      }}
-                      title="Delete"
-                      className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
+            {pagedRoles.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="py-16 text-center text-sm text-muted-foreground">
+                  No roles found.
                 </td>
               </tr>
-            ))}
+            ) : (
+              pagedRoles.map((role) => (
+                <tr
+                  key={role.id}
+                  className="group border-t border-border hover:bg-muted/30 transition-colors cursor-pointer"
+                >
+                  <td className="px-5 py-4">
+                    <Link to="/roles/$roleId" params={{ roleId: role.id }} className="block">
+                      <div className="font-medium hover:text-primary">{role.roleName}</div>
+
+                      <div className="text-xs text-muted-foreground">{role.description || "-"}</div>
+                    </Link>
+                  </td>
+
+                  <td className="px-5 py-4">{role.roleCode}</td>
+
+                  <td className="px-5 py-4">{role.roleType}</td>
+
+                  <td className="px-5 py-4">{role.priority}</td>
+
+                  <td className="px-5 py-4">
+                    <Badge tone={role.status === "Active" ? "success" : "muted"}>
+                      {role.status}
+                    </Badge>
+                  </td>
+
+                  <td className="px-4 py-4">
+                    <div className="flex items-center justify-end gap-1">
+                      <Link
+                        to="/roles/edit/$roleId"
+                        params={{ roleId: role.id }}
+                        onClick={(e) => e.stopPropagation()}
+                        title="Edit"
+                        className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Link>
+
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+
+                          try {
+                            await rolesStore.remove(role.id);
+
+                            toast.success("Role deleted successfully");
+                          } catch (error) {
+                            console.error(error);
+
+                            toast.error("Failed to delete role");
+                          }
+                        }}
+                        title="Delete"
+                        className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

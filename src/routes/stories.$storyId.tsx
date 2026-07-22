@@ -1,7 +1,7 @@
 import { useStories } from "@/lib/stories-store";
 import { useScrumTasks } from "@/lib/scrum-tasks-store";
 import { useDefects } from "@/lib/defects-store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Plus, Pencil, Trash2, X } from "lucide-react";
@@ -23,7 +23,7 @@ import {
   type DefectStatus,
 } from "@/lib/defects-store";
 import { useSprints } from "@/lib/sprints-store";
-import { users, userById } from "@/lib/mock-data";
+import { useUsers } from "@/lib/users-store";
 import type { Story } from "@/lib/stories-store";
 import StoryViewForm from "@/components/story/StoryViewForm";
 
@@ -40,6 +40,7 @@ function StoryDetail() {
   const stories = useStories();
   const allTasks = useScrumTasks();
   const allDefects = useDefects();
+  const users = useUsers();
   const story = stories.find((s) => s.id === storyId || s._id === storyId);
 
   if (!story) {
@@ -112,6 +113,7 @@ function TasksPanel({
   tasks: ScrumTask[];
   onView?: (id: string) => void;
 }) {
+  const users = useUsers();
   const navigate = useNavigate();
 
   return (
@@ -192,11 +194,13 @@ function TasksPanel({
                     <td className="py-2.5">
                       <div className="flex items-center gap-2">
                         <img
-                          src={userById(t.assigneeId).avatar}
+                          src={users.find((u) => u.id === t.assigneeId)?.profilePicture || ""}
                           className="h-6 w-6 rounded-full border border-border"
                         />
                         <span className="text-xs truncate max-w-30">
-                          {userById(t.assigneeId).name}
+                          {`${users.find((u) => u.id === t.assigneeId)?.firstName ?? ""} ${
+                            users.find((u) => u.id === t.assigneeId)?.lastName ?? ""
+                          }`}
                         </span>
                       </div>
                     </td>
@@ -262,9 +266,10 @@ function TaskForm({
     data: Omit<ScrumTask, "id" | "createdAt" | "updatedAt" | "createdBy"> & { storyId: string },
   ) => void;
 }) {
+  const users = useUsers();
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
-  const [assigneeId, setassigneeId] = useState(initial?.assigneeId ?? users[0].id);
+  const [assigneeId, setassigneeId] = useState(initial?.assigneeId ?? "");
   const [status, setStatus] = useState<TaskStatus>(initial?.status ?? "Todo");
   const [priority, setPriority] = useState<TaskPriority>(initial?.priority ?? "Medium");
   const [originalEstimate, setEst] = useState(initial?.originalEstimate ?? 4);
@@ -273,6 +278,12 @@ function TaskForm({
     initial?.startDate?.slice(0, 10) ?? new Date().toISOString().slice(0, 10),
   );
   const [dueDate, setDue] = useState(initial?.dueDate?.slice(0, 10) ?? "");
+
+  useEffect(() => {
+    if (!assigneeId && users.length > 0) {
+      setassigneeId(users[0].id);
+    }
+  }, [users, assigneeId]);
 
   return (
     <form
@@ -320,7 +331,7 @@ function TaskForm({
           >
             {users.map((u) => (
               <option key={u.id} value={u.id}>
-                {u.name}
+                {u.firstName} {u.lastName}
               </option>
             ))}
           </select>
@@ -402,6 +413,7 @@ function TaskForm({
 
 function DefectsPanel({ storyId, defects }: { storyId: string; defects: Defect[] }) {
   const navigate = useNavigate();
+  const users = useUsers();
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
@@ -486,11 +498,11 @@ function DefectsPanel({ storyId, defects }: { storyId: string; defects: Defect[]
                     <td className="py-2.5">
                       <div className="flex items-center gap-2">
                         <img
-                          src={userById(d.assignedTo).avatar}
+                          src={users.find((u) => u.id === d.assignedTo)?.profilePicture || ""}
                           className="h-6 w-6 rounded-full border border-border"
                         />
                         <span className="text-xs truncate max-w-30">
-                          {userById(d.assignedTo).name}
+                          {`${users.find((u) => u.id === d.assignedTo)?.firstName ?? ""} ${users.find((u) => u.id === d.assignedTo)?.lastName ?? ""}`}
                         </span>
                       </div>
                     </td>
@@ -569,12 +581,19 @@ function DefectForm({
     },
   ) => void;
 }) {
+  const users = useUsers();
   const [defectTitle, setTitle] = useState(initial?.defectTitle ?? "");
   const [defectDescription, setDescription] = useState(initial?.defectDescription ?? "");
   const [severity, setSeverity] = useState<DefectSeverity>(initial?.severity ?? "Medium");
   const [priority, setPriority] = useState<DefectPriority>(initial?.priority ?? "Medium");
   const [status, setStatus] = useState<DefectStatus>(initial?.status ?? "Open");
-  const [assignedTo, setAssignedTo] = useState(initial?.assignedTo ?? users[0].id);
+  const [assignedTo, setAssignedTo] = useState(initial?.assignedTo ?? "");
+
+  useEffect(() => {
+    if (!assignedTo && users.length > 0) {
+      setAssignedTo(users[0].id);
+    }
+  }, [users, assignedTo]);
 
   return (
     <form
@@ -657,7 +676,7 @@ function DefectForm({
           >
             {users.map((u) => (
               <option key={u.id} value={u.id}>
-                {u.name}
+                {u.firstName} {u.lastName}
               </option>
             ))}
           </select>
